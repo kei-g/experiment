@@ -27,6 +27,7 @@
   "license": "BSD-3-Clause",
   "main": "index.js",
   "name": "@kei-g/experiment",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/kei-g/experiment.git"
