@@ -10,5 +10,8 @@ node_js:
   - 17
 notifications:
   email: false
+os:
+  - osx
 script:
+  - find . -name \*\.json -or -name \*\.md
   - npm test
