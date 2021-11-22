@@ -38,7 +38,7 @@
     "clean": "rimraf .nyc_output/ coverage/ index.d.ts index.js",
     "cover": "nyc --check-coverage -r html -r text _mocha",
     "lint": "eslint src/**/*.ts",
-    "prepublishOnly": "false",
+    "prepublishOnly": "run-s build",
     "start": "ts-node src/index.ts",
     "test": "run-p cover lint"
   },
