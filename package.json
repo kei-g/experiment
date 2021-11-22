@@ -28,10 +28,7 @@
   "main": "index.js",
   "name": "@kei-g/experiment",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kei-g/experiment.git"
-  },
+  "repository": "github:kei-g/experiment",
   "scripts": {
     "build": "npm-run-all -p clean lint -p build:*",
     "build:experiment": "esbuild src/experiment.ts --outfile=experiment.js --platform=node",
