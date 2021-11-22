@@ -27,7 +27,9 @@
   "license": "BSD-3-Clause",
   "main": "index.js",
   "name": "@kei-g/experiment",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": "github:kei-g/experiment",
   "scripts": {
     "build": "npm-run-all -p clean lint -p build:*",
