@@ -33,10 +33,9 @@
   "repository": "github:kei-g/experiment",
   "scripts": {
     "build": "npm-run-all -p clean lint -p build:*",
-    "build:experiment": "esbuild src/experiment.ts --outfile=experiment.js --platform=node",
-    "build:index": "esbuild src/index.ts --minify --outfile=index.js --platform=node",
+    "build:bundle": "esbuild src/index.ts --bundle --minify --outfile=index.js --platform=node",
     "build:tsc": "tsc",
-    "clean": "rimraf .nyc_output/ coverage/ experiment.d.ts experiment.js index.d.ts index.js",
+    "clean": "rimraf .nyc_output/ coverage/ index.d.ts index.js",
     "cover": "nyc --check-coverage -r html -r text _mocha",
     "lint": "eslint src/**/*.ts",
     "prepublishOnly": "false",
