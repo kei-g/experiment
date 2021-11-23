@@ -1,6 +1,7 @@
 **/.*
 **/CHANGELOG.md
 **/CODE_OF_CONDUCT.md
+**/dist/
 **/src/
 **/test/
 **/tsconfig.json
