@@ -21,7 +21,7 @@ jobs:
         id: node_modules_cache_id
         uses: actions/cache@v2
         with:
-          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package.json')) }}
           path: node_modules
       - name: Setup modules
         if: steps.node_modules_cache_id.outputs.cache-hit != 'true'
@@ -46,7 +46,7 @@ jobs:
         id: node_modules_cache_id
         uses: actions/cache@v2
         with:
-          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package.json')) }}
           path: node_modules
       - name: Test
         run: npm test
