@@ -6,6 +6,9 @@
   "bugs": {
     "url": "https://github.com/kei-g/experiment/issues"
   },
+  "dependencies": {
+    "@actions/core": "^1.6.0"
+  },
   "description": "Personal experimental repository",
   "devDependencies": {
     "@types/chai": "^4.2.22",
