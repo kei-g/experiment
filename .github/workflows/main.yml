@@ -1,7 +1,3 @@
-name: test
-on:
-  push:
-    branches: [ main ]
 jobs:
   setup:
     name: Setup for Node.js ${{ matrix.node }}
@@ -57,3 +53,7 @@ jobs:
           name: code-coverage-report-${{ matrix.node }}
           path: coverage
           retention-days: 1
+name: test
+on:
+  push:
+    branches: [ main ]
