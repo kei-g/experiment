@@ -20,17 +20,6 @@ jobs:
           prerelease: false
           release_name: Version ${{ github.ref }}
           tag_name: ${{ github.ref }}
-  echo:
-    name: Echo
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-      - name: Echo
-        run: |
-          echo ${{ github.ref }}
   get-commit-summary:
     name: Get Commit Summary
     outputs:

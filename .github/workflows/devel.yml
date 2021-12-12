@@ -8,25 +8,6 @@ jobs:
         with:
           id: 123
           name: ${{ github.ref }}
-  example:
-    name: Example
-    runs-on: ubuntu-latest
-    steps:
-      - name: mkdir
-        run: mkdir example
-      - name: 1
-        run: |
-          EXAMPLE=$(echo ${{ github.ref }})
-      - name: 2
-        run: |
-          echo "$EXAMPLE" > example/1.txt
-          echo ${{ github.ref }} > example/2.txt
-      - name: Archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: example-result
-          path: example
-          retention-days: 1
 name: devel
 on:
   push:
