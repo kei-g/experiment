@@ -35,12 +35,14 @@
   },
   "repository": "github:kei-g/experiment",
   "scripts": {
-    "build": "npm-run-all -p clean lint -p build:*",
+    "build": "run-p build:*",
     "build:bundle": "esbuild src/index.ts --bundle --minify --outfile=index.js --platform=node",
     "build:tsc": "tsc",
     "clean": "rimraf .nyc_output/ coverage/ *.d.ts index.js",
     "cover": "nyc --check-coverage -r html -r text _mocha",
     "lint": "eslint src/**/*.ts",
+    "postpublish": "run-s clean",
+    "prebuild": "run-p clean lint",
     "prepublishOnly": "run-s build",
     "start": "ts-node src/index.ts",
     "test": "run-p cover lint"
