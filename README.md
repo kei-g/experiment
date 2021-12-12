@@ -6,10 +6,10 @@
 
 [dependency-image]:https://img.shields.io/librariesio/release/npm/@kei-g/experiment?logo=nodedotjs
 [dependency-url]:https://npmjs.com/package/@kei-g/experiment?activeTab=dependencies
-[github-devel-image]:https://github.com/kei-g/experiment/actions/workflows/devel.yml/bagde.svg?branch=devel
-[github-test-image]:https://github.com/kei-g/experiment/actions/workflows/main.yml/badge.svg?branch=main
-[github-devel-url]:https://github.com/kei-g/experiment/actions/workflows/devel.yml?branch=devel
-[github-test-url]:https://github.com/kei-g/experiment/actions/workflows/test.yml?branch=main
+[github-devel-image]:https://github.com/kei-g/experiment/actions/workflows/devel.yml/badge.svg
+[github-test-image]:https://github.com/kei-g/experiment/actions/workflows/main.yml/badge.svg
+[github-devel-url]:https://github.com/kei-g/experiment/actions/workflows/devel.yml
+[github-test-url]:https://github.com/kei-g/experiment/actions/workflows/test.yml
 [github-url]:https://github.com/kei-g/experiment
 [license-image]:https://img.shields.io/github/license/kei-g/experiment
 [license-url]:https://opensource.org/licenses/BSD-3-Clause
