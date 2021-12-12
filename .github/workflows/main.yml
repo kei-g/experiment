@@ -4,7 +4,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '16.13.1', '17.2.0' ]
+        node:
+          - '16.13.1'
+          - '17.2.0'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -24,11 +26,14 @@ jobs:
         run: npm install
   test:
     name: Test on Node.js ${{ matrix.node }}
-    needs: [ setup ]
+    needs:
+      - setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '16.13.1', '17.2.0' ]
+        node:
+          - '16.13.1'
+          - '17.2.0'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -56,4 +61,5 @@ jobs:
 name: test
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main

@@ -21,4 +21,5 @@ jobs:
 name: devel
 on:
   push:
-    branches: [ devel ]
+    branches:
+      - devel
