@@ -1,45 +1,36 @@
 jobs:
   create-release:
+    if: startsWith( github.ref, 'refs/tags/v' )
     name: Create release
-    needs:
-      - get-commit-summary
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - name: Create Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: actions/create-release@v1
-        with:
-          body: |
-            ${{ needs.get-commit-summary.outputs.content }}
-          draft: false
-          prerelease: false
-          release_name: Version ${{ github.ref }}
-          tag_name: ${{ github.ref }}
-  get-commit-summary:
-    name: Get Commit Summary
-    outputs:
-      content: ${{ steps.commit_summary.outputs.content }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-      - name: Get commit summary
-        id: commit_summary
+      - id: commit_summary
+        name: Get commit summary
         run: |
           text="$(git log -1 --pretty="## Change Logs%n%n%b" ${{ github.ref }} | head -n -2)"
           text="${text//'%'/'%25'}"
           text="${text//$'\n'/'%0A'}"
           text="${text//$'\r'/'%0D'}"
           echo "::set-output name=content::$text"
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: Create Release
+        uses: actions/create-release@v1
+        with:
+          body: |
+            ${{ steps.commit_summary.outputs.content }}
+          draft: false
+          prerelease: false
+          release_name: Version ${{ github.ref }}
+          tag_name: ${{ github.ref }}
 name: tags
 on:
-  create:
+  push:
+    branches:
+      - main
     tags:
       - 'v[0-9]+(\.[0-9]+)*'
