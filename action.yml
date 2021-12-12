@@ -1,0 +1,16 @@
+author: 'kei-g'
+branding:
+  color: 'blue'
+  icon: 'upload'
+description: 'Personal Experimental Action'
+inputs:
+  id:
+    description: Your ID
+    required: true
+  name:
+    description: Your Name
+    required: true
+name: 'Experimental Action'
+runs:
+  main: 'dist/index.js'
+  using: 'node12'

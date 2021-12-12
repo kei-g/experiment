@@ -1,14 +1,12 @@
-name: test
-on:
-  push:
-    branches: [ main ]
 jobs:
   setup:
     name: Setup for Node.js ${{ matrix.node }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '16.13.0', '17.1.0' ]
+        node:
+          - '16.13.1'
+          - '17.2.0'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -21,18 +19,21 @@ jobs:
         id: node_modules_cache_id
         uses: actions/cache@v2
         with:
-          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package.json')) }}
           path: node_modules
       - name: Setup modules
         if: steps.node_modules_cache_id.outputs.cache-hit != 'true'
         run: npm install
   test:
     name: Test on Node.js ${{ matrix.node }}
-    needs: [ setup ]
+    needs:
+      - setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '16.13.0', '17.1.0' ]
+        node:
+          - '16.13.1'
+          - '17.2.0'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -46,7 +47,7 @@ jobs:
         id: node_modules_cache_id
         uses: actions/cache@v2
         with:
-          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package.json')) }}
           path: node_modules
       - name: Test
         run: npm test
@@ -57,3 +58,8 @@ jobs:
           name: code-coverage-report-${{ matrix.node }}
           path: coverage
           retention-days: 1
+name: test
+on:
+  push:
+    branches:
+      - main
