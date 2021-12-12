@@ -1,13 +1,15 @@
 # experiment [![licence][license-image]][license-url] [![npm][npm-image]][npm-url]
 
-[![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url] [![github][github-devel-image]][github-url] [![github][github-test-image]][github-url] [![travis][travis-image]][travis-url]
+[![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url] [![github][github-devel-image]][github-devel-url] [![github][github-test-image]][github-test-url] [![travis][travis-image]][travis-url]
 
 `experiment` - Personal experimental repository
 
 [dependency-image]:https://img.shields.io/librariesio/release/npm/@kei-g/experiment?logo=nodedotjs
 [dependency-url]:https://npmjs.com/package/@kei-g/experiment?activeTab=dependencies
-[github-devel-image]:https://img.shields.io/github/workflow/status/kei-g/experiment/devel/devel?label=devel&logo=github
-[github-test-image]:https://img.shields.io/github/workflow/status/kei-g/experiment/test/main?label=build%20%26%20test&logo=github
+[github-devel-image]:https://github.com/kei-g/experiment/actions/workflows/devel.yml/bagde.svg?branch=devel
+[github-test-image]:https://github.com/kei-g/experiment/actions/workflows/main.yml/badge.svg?branch=main
+[github-devel-url]:https://github.com/kei-g/experiment/actions/workflows/devel.yml?branch=devel
+[github-test-url]:https://github.com/kei-g/experiment/actions/workflows/test.yml?branch=main
 [github-url]:https://github.com/kei-g/experiment
 [license-image]:https://img.shields.io/github/license/kei-g/experiment
 [license-url]:https://opensource.org/licenses/BSD-3-Clause
