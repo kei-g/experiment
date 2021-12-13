@@ -1,23 +1,13 @@
 jobs:
-  example:
-    name: Example
+  action:
+    name: Action
     runs-on: ubuntu-latest
     steps:
-      - name: mkdir
-        run: mkdir example
-      - name: 1
-        run: |
-          EXAMPLE=$(echo ${{ github.ref }})
-      - name: 2
-        run: |
-          echo "$EXAMPLE" > example/1.txt
-          echo ${{ github.ref }} > example/2.txt
-      - name: Archive
-        uses: actions/upload-artifact@v2
+      - name: Experiment
+        uses: kei-g/experiment@v1.0.1
         with:
-          name: example-result
-          path: example
-          retention-days: 1
+          id: 123
+          name: ${{ github.ref }}
 name: devel
 on:
   push:
