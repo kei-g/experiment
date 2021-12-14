@@ -1,33 +1,6 @@
 jobs:
-  setup:
-    name: Setup for Node.js ${{ matrix.node }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node:
-          - '16.13.1'
-          - '17.2.0'
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-      - name: Cache node_modules
-        id: node_modules_cache_id
-        uses: actions/cache@v2
-        with:
-          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package.json')) }}
-          path: node_modules
-      - name: Setup modules
-        if: steps.node_modules_cache_id.outputs.cache-hit != 'true'
-        run: npm install
   test:
     name: Test on Node.js ${{ matrix.node }}
-    needs:
-      - setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -35,31 +8,30 @@ jobs:
           - '16.13.1'
           - '17.2.0'
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           fetch-depth: 1
           submodules: true
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
+          cache: 'npm'
           node-version: ${{ matrix.node }}
-      - name: Restore node_modules
-        id: node_modules_cache_id
-        uses: actions/cache@v2
-        with:
-          key: ${{ matrix.node }}-${{ hashFiles(format('{0}{1}', github.workspace, '/package.json')) }}
-          path: node_modules
+      - name: Setup node modules
+        run: npm install
       - name: Test
         run: npm test
-      - name: Archive code coverage results
+      - name: Archive code coverages report
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
-          name: code-coverage-report-${{ matrix.node }}
+          name: code-coverage-report-${{ github.event.repository.name }}-${{ matrix.node }}
           path: coverage
           retention-days: 1
 name: test
 on:
   push:
     branches:
+      - devel
       - main
