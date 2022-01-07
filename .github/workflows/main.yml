@@ -21,7 +21,7 @@ jobs:
       - name: Upgrade npm
         run: npm install npm@latest -g
       - name: Setup node modules
-        run: npm install
+        run: npm ci
       - name: Test
         run: npm test
       - name: Archive code coverages report
