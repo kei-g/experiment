@@ -1,15 +1,19 @@
 # experiment [![licence][license-image]][license-url] [![npm][npm-image]][npm-url]
 
-[![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url] [![github][github-devel-image]][github-devel-url] [![github][github-test-image]][github-test-url] [![travis][travis-image]][travis-url]
+[![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url] [![GitHub CI (devel)][github-devel-image]][github-devel-url] [![GitHub CI (Build)][github-build-image]][github-build-url] [![GitHub CI (CodeQL)][github-codeql-image]][github-codeql-url] [![GitHub CI (Coverage)][github-coverage-image]][github-coverage-url] [![travis][travis-image]][travis-url]
 
 `experiment` - Personal experimental repository
 
 [dependency-image]:https://img.shields.io/librariesio/release/npm/@kei-g/experiment?logo=nodedotjs
 [dependency-url]:https://npmjs.com/package/@kei-g/experiment?activeTab=dependencies
+[github-build-image]:https://github.com/kei-g/experiment/actions/workflows/build.yml/badge.svg
+[github-build-url]:https://github.com/kei-g/experiment/actions/workflows/build.yml
+[github-coverage-image]:https://github.com/kei-g/experiment/actions/workflows/coverage.yml/badge.svg
+[github-coverage-url]:https://github.com/kei-g/experiment/actions/workflows/coverage.yml
+[github-codeql-image]:https://github.com/kei-g/experiment/actions/workflows/codeql.yml/badge.svg
+[github-codeql-url]:https://github.com/kei-g/experiment/actions/workflows/codeql.yml
 [github-devel-image]:https://github.com/kei-g/experiment/actions/workflows/devel.yml/badge.svg
-[github-test-image]:https://github.com/kei-g/experiment/actions/workflows/main.yml/badge.svg
 [github-devel-url]:https://github.com/kei-g/experiment/actions/workflows/devel.yml
-[github-test-url]:https://github.com/kei-g/experiment/actions/workflows/test.yml
 [github-url]:https://github.com/kei-g/experiment
 [license-image]:https://img.shields.io/github/license/kei-g/experiment
 [license-url]:https://opensource.org/licenses/BSD-3-Clause
