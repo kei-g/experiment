@@ -1,8 +1,9 @@
 jobs:
-  test:
-    name: Test on Node.js ${{ matrix.node }}
+  build:
+    name: Build on Node.js ${{ matrix.node }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node:
           - '16.13.1'
@@ -22,18 +23,29 @@ jobs:
         run: npm install npm@latest -g
       - name: Setup node modules
         run: npm ci
-      - name: Test
-        run: npm test
-      - name: Archive code coverages report
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-${{ github.event.repository.name }}-${{ matrix.node }}
-          path: coverage
-          retention-days: 1
-name: test
+      - name: Build
+        run: npm run build
+name: Build
 on:
+  pull_request:
+    branches:
+      - devel
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.editorconfig'
+      - '.gitignore'
+      - '.github/dependabot.yml'
+      - '.travis.yml'
+      - 'LICENSE'
   push:
     branches:
       - devel
       - main
+    paths-ignore:
+      - '**.md'
+      - '.editorconfig'
+      - '.gitignore'
+      - '.github/dependabot.yml'
+      - '.travis.yml'
+      - 'LICENSE'
