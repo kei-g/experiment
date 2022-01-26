@@ -43,7 +43,6 @@ on:
       - '.editorconfig'
       - '.gitignore'
       - '.github/dependabot.yml'
-      - '.travis.yml'
       - 'LICENSE'
   push:
     branches:
@@ -54,5 +53,4 @@ on:
       - '.editorconfig'
       - '.gitignore'
       - '.github/dependabot.yml'
-      - '.travis.yml'
       - 'LICENSE'
