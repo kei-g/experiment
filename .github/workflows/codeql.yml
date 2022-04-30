@@ -31,24 +31,10 @@ on:
       - devel
       - main
       - release
-    paths-ignore:
-      - '**.md'
-      - '.editorconfig'
-      - '.gitignore'
-      - '.github/dependabot.yml'
-      - '.npmignore'
-      - 'LICENSE'
   push:
     branches:
       - devel
       - main
       - release
-    paths-ignore:
-      - '**.md'
-      - '.editorconfig'
-      - '.gitignore'
-      - '.github/dependabot.yml'
-      - '.npmignore'
-      - 'LICENSE'
   schedule:
     - cron: '28 10 * * 4'
