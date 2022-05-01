@@ -27,7 +27,7 @@
   - `@typescript-eslint/parser` is bumped from 5.6.0 to 5.21.0
   - `esbuild` is bumped from 0.14.2 to 0.14.38
   - `eslint` is bumped from 8.4.1 to 8.14.0
-  - `typescript` is bumped from 4.5.3 to 4.6.4
+  - `typescript` is bumped from 4.5.3 to 4.6.3
 
 ## Version 1.0.1
 
