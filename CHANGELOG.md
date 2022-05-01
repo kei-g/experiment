@@ -1,5 +1,17 @@
 # ChangeLogs
 
+## Version 1.0.3
+
+- :green_heart: CI chore
+  - Dependabot has become to be applied also to GitHub Actions
+  - Looser version has become to be specified for `kei-g/experiment`
+- :arrow_up: GitHub Action is bumped
+  - `github/codeql-action` is bumped from v1 to v2
+- :arrow_up: Packages are bumped
+  - `typescript` is bumped from 4.6.3 to 4.6.4
+- :wrench:
+  - 'dist/index.ts' has become to be transpiled with --target=ES2015
+
 ## Version 1.0.2
 
 - :wrench: 'author' is fixed
