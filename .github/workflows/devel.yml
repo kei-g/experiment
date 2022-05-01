@@ -4,7 +4,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Experiment
-        uses: kei-g/experiment@v1.0.2
+        uses: kei-g/experiment@v1
         with:
           id: 123
           name: ${{ github.ref }}
