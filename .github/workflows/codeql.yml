@@ -27,14 +27,6 @@ jobs:
 name: CodeQL
 on:
   pull_request:
-    branches:
-      - devel
-      - main
-      - release
   push:
-    branches:
-      - devel
-      - main
-      - release
   schedule:
     - cron: '28 10 * * 4'
