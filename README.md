@@ -1,6 +1,6 @@
 # experiment [![licence][license-image]][license-url] [![npm][npm-image]][npm-url]
 
-[![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url] [![GitHub CI (devel)][github-devel-image]][github-devel-url] [![GitHub CI (Build)][github-build-image]][github-build-url] [![GitHub CI (CodeQL)][github-codeql-image]][github-codeql-url] [![GitHub CI (Coverage)][github-coverage-image]][github-coverage-url]
+[![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url] [![GitHub CI (devel)][github-devel-image]][github-devel-url] [![GitHub CI (Build)][github-build-image]][github-build-url] [![GitHub CI (Coverage)][github-coverage-image]][github-coverage-url]
 
 `experiment` - Personal experimental repository
 
@@ -10,8 +10,6 @@
 [github-build-url]:https://github.com/kei-g/experiment/actions/workflows/build.yml
 [github-coverage-image]:https://github.com/kei-g/experiment/actions/workflows/coverage.yml/badge.svg
 [github-coverage-url]:https://github.com/kei-g/experiment/actions/workflows/coverage.yml
-[github-codeql-image]:https://github.com/kei-g/experiment/actions/workflows/codeql.yml/badge.svg
-[github-codeql-url]:https://github.com/kei-g/experiment/actions/workflows/codeql.yml
 [github-devel-image]:https://github.com/kei-g/experiment/actions/workflows/devel.yml/badge.svg
 [github-devel-url]:https://github.com/kei-g/experiment/actions/workflows/devel.yml
 [github-url]:https://github.com/kei-g/experiment
