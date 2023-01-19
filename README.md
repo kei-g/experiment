@@ -1,8 +1,15 @@
 # experiment [![license][license-image]][license-url] [![npm][npm-image]][npm-url]
 
-[![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url] [![GitHub CI (Build)][github-build-image]][github-build-url] [![GitHub CI (Coverage)][github-coverage-image]][github-coverage-url]
+[![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url]
 
 `experiment` - Personal experimental repository
+
+## CI Status
+
+| Workflow Name | Status |
+|-|-|
+| **Build** | [![GitHub CI (Build)][github-build-image]][github-build-url] |
+| **Coverage** | [![GitHub CI (Coverage)][github-coverage-image]][github-coverage-url] |
 
 [dependency-image]:https://img.shields.io/librariesio/release/npm/@kei-g/experiment?logo=nodedotjs
 [dependency-url]:https://npmjs.com/package/@kei-g/experiment?activeTab=dependencies
