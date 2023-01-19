@@ -1,4 +1,4 @@
-# experiment [![licence][license-image]][license-url] [![npm][npm-image]][npm-url]
+# experiment [![license][license-image]][license-url] [![npm][npm-image]][npm-url]
 
 [![coverage][nyc-cov-image]][github-url] [![dependency][dependency-image]][dependency-url] [![maintenance][maintenance-image]][npmsio-url] [![quality][quality-image]][npmsio-url] [![GitHub CI (Build)][github-build-image]][github-build-url] [![GitHub CI (Coverage)][github-coverage-image]][github-coverage-url]
 
