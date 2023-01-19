@@ -19,7 +19,7 @@
 [github-coverage-url]:https://github.com/kei-g/experiment/actions/workflows/coverage.yml
 [github-url]:https://github.com/kei-g/experiment
 [license-image]:https://img.shields.io/github/license/kei-g/experiment
-[license-url]:https://opensource.org/licenses/BSD-3-Clause
+[license-url]:https://github.com/kei-g/experiment/blob/main/LICENSE
 [npm-image]:https://img.shields.io/npm/v/@kei-g/experiment?logo=npm
 [npm-url]:https://npmjs.com/@kei-g/experiment
 [nyc-cov-image]:https://img.shields.io/nycrc/kei-g/experiment?config=.nycrc.json&label=coverage&logo=mocha
