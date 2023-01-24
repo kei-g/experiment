@@ -111,6 +111,7 @@ jobs:
           body="This PR bumps the version of @kei-g/none from ${{ steps.version.outputs.from}} to $version"
           pull_request_url=$(gh pr create --base main --body "$body" --title "$message")
           gh pr merge --auto --merge "$pull_request_url"
+          git push origin :$branch
         shell: bash
       - env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
