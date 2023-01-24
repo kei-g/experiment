@@ -21,9 +21,9 @@ jobs:
             const { readFileSync } = require('node:fs')
             const package = JSON.parse(readFileSync('package.json'))
             const flags = {}
-            for (const name in package.dependencies)
+            for (const name of package.dependencies.keys())
               flags[name] = '--save'
-            for (const name in package.devDependencies)
+            for (const name of package.devDependencies.keys())
               flags[name] = '-D'
             const { execSync } = require('node:child_process')
             for (const dependency of ${{ fromJSON(steps.dependabot-metadata.outputs.updated-dependencies-json) }})
