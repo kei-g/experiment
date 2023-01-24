@@ -5,10 +5,14 @@
     "commitish",
     "devel",
     "esbuild",
+    "ghaction",
+    "gpgsign",
     "linebreak",
     "noreply",
     "outfile",
     "postpublish",
+    "signingkey",
+    "signoff",
     "tada",
     "typeof"
   ]
