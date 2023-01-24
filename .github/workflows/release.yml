@@ -111,8 +111,10 @@ jobs:
           git push --set-upstream origin $branch
           body="This PR bumps the version of @kei-g/none from ${{ steps.version.outputs.from}} to $version"
           pull_request_url=$(gh pr create --base main --body "$body" --title "$message")
+          sleep 10
           subject=":twisted_rightwards_arrows: Merge pull request #$pr from $branch"
           gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
+          sleep 3
           git push origin :$branch
         shell: bash
       - env:
