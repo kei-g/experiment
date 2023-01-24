@@ -6,7 +6,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "github:kei-g/experiment/none",
+  "repository": {
+    "url": "https://github.com/kei-g/experiment/tree/main/none"
+  },
   "scripts": {
     "test": ":"
   },
