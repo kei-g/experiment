@@ -4,16 +4,17 @@ jobs:
     name: Approve
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
       - id: dependabot-metadata
         name: Dependabot metadata
         uses: dependabot/fetch-metadata@v1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm')
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          ref: github.event.head.ref
+      - if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm
         name: Update 'package.json'
         uses: actions/github-script@v6
         with:
@@ -37,25 +38,30 @@ jobs:
               }
       - continue-on-error: true
         id: difference
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm')
+        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm
         name: Check difference
         run: |
           git add -N .
-          git diff --exit-code --name-only
+          files=$(
+            git diff --exit-code --name-only | while read name; do
+              printf "'%s'\n" $name
+            done | xargs
+          )
+          echo "files=$files" | tee -a $GITHUB_OUTPUT
       - env:
-          GITHUB_TOKEN: secrets.GITHUB_TOKEN
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.difference.outcome == 'failure'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.difference.outcome == 'failure'
         name: Commit changes and push if necessary
         run: |
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git config user.name github-actions[bot]
           git add .
-          git commit --amend --author=. --no-edit
+          git commit --author=. -m ":robot: Update ${{ steps.difference.outputs.files }}"
           git push
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-        if: steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && ((startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.difference.outcome == 'success') || !startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm'))
+        if: steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && ((steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.difference.outcome == 'success') || steps.dependabot-metadata.outputs.package-ecosystem !=~ ^npm))
         name: Approve a PR
         run: |
           gh pr review --approve "$PR_URL"
