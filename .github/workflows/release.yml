@@ -60,7 +60,7 @@ jobs:
               }
             )
   none:
-    if: github.event_name == 'push' && github.ref_type == 'branch'
+    if: github.event_name == 'push' && github.ref_type == 'branch' && startsWith(github.event.head_commit.message, ':bookmark:\ Bump the version of @kei-g/none to ') == false
     name: Publish @kei-g/none
     runs-on: ubuntu-latest
     steps:
