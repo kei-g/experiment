@@ -2,12 +2,14 @@
   "version": "0.2",
   "words": [
     "codeql",
+    "commitish",
     "devel",
     "esbuild",
     "linebreak",
     "noreply",
     "outfile",
     "postpublish",
-    "tada"
+    "tada",
+    "typeof"
   ]
 }
