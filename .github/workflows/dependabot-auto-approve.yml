@@ -26,7 +26,7 @@ jobs:
             for (const name of Object.keys(package.devDependencies))
               flags[name] = '-D'
             const { execSync } = require('node:child_process')
-            for (const dependency of ${{ fromJSON(steps.dependabot-metadata.outputs.updated-dependencies-json) }})
+            for (const dependency of ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }})
               if (dependency.packageEcosystem === 'npm') {
                 const flag = flags[dependency.dependencyName]
                 if (!flag)
