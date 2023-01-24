@@ -1,28 +1,25 @@
 jobs:
   merge:
-    if: (github.event_name == 'pull_request_review' && github.event.review.state == 'approved') || (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]')
     name: Merge
     runs-on: ubuntu-latest
     steps:
       - id: dependabot-metadata
-        if: github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]'
         name: Fetch Dependabot metadata
         uses: dependabot/fetch-metadata@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-        if: (github.event_name == 'pull_request_review' && github.event.review.state == 'approved') || (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch')
+          PR_URL: ${{ inputs.pull-request-url }}
         name: Enable auto-merge for Dependabot PRs
         run: |
           gh pr merge --auto --merge "$PR_URL"
 name: Dependabot auto-merge
 on:
-  pull_request_review:
-    types:
-      - submitted
-  pull_request_target:
+  workflow_call:
+    inputs:
+      pull-request-url:
+        type: string
 permissions:
   contents: write
   pull-requests: write

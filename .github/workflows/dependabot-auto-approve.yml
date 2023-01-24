@@ -9,12 +9,13 @@ jobs:
         uses: dependabot/fetch-metadata@v1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Checkout the repository
+      - if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+        name: Checkout the repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 1
           ref: github.event.head.ref
-      - if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm
+      - if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Update 'package.json'
         uses: actions/github-script@v6
         with:
@@ -38,7 +39,7 @@ jobs:
               }
       - continue-on-error: true
         id: difference
-        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm
+        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Check difference
         run: |
           git add -N .
@@ -50,7 +51,7 @@ jobs:
           echo "files=$files" | tee -a $GITHUB_OUTPUT
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.difference.outcome == 'failure'
+        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outcome == 'failure'
         name: Commit changes and push if necessary
         run: |
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
@@ -61,10 +62,17 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-        if: steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && ((steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.difference.outcome == 'success') || steps.dependabot-metadata.outputs.package-ecosystem !=~ ^npm))
+        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Approve a PR
         run: |
           gh pr review --approve "$PR_URL"
+  invoke-auto-merge:
+    name: Invoke auto merge
+    needs:
+      - approve
+    uses: ./.github/workflows/dependabot-auto-merge.yml
+    with:
+      pull-request-url: ${{ github.event.pull_request.html_url }}
 name: Dependabot auto-approve
 on:
   pull_request_target:
@@ -72,4 +80,5 @@ on:
       - opened
       - reopened
 permissions:
+  contents: write
   pull-requests: write
