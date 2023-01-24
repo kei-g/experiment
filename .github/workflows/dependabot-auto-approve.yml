@@ -4,15 +4,58 @@ jobs:
     name: Approve
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
       - id: dependabot-metadata
         name: Dependabot metadata
         uses: dependabot/fetch-metadata@v1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - if: steps.dependabot-metadata.outputs.package-ecosystem == 'npm'
+        name: Update 'package.json'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { readFileSync } = require('node:fs')
+            const package = JSON.parse(readFileSync('package.json'))
+            const flags = {}
+            for (const name in package.dependencies)
+              flags[name] = '--save'
+            for (const name in package.devDependencies)
+              flags[name] = '-D'
+            const { execSync } = require('node:child_process')
+            for (const dependency of ${{ fromJSON(steps.dependabot-metadata.outputs.updated-dependencies-json) }})
+              if (dependency.packageEcosystem === 'npm') {
+                const flag = flags[dependency.dependencyName]
+                if (!flag)
+                  return core.setFailure(`${dependency.dependencyName} is included in neither 'dependencies' nor 'devDependencies'`)
+                const command = `npm install ${dependency.dependencyName}@${dependency.newVersion} ${flag}`
+                console.log(`executing ${command}`)
+                execSync(command)
+              }
+      - continue-on-error: true
+        id: difference
+        if: steps.dependabot-metadata.outputs.package-ecosystem == 'npm'
+        name: Check difference
+        run: |
+          git add -N .
+          git diff --exit-code --name-only
+      - env:
+          GITHUB_TOKEN: secrets.GITHUB_TOKEN
+        if: steps.difference.outcome == 'failure'
+        name: Commit changes and push if necessary
+        run: |
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config user.name github-actions[bot]
+          git add .
+          git commit --amend --author=. --no-edit
+          git push
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-        if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
+        if: steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outcome == 'success'
         name: Approve a PR
         run: |
           gh pr review --approve "$PR_URL"

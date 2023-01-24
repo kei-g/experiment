@@ -5,6 +5,7 @@
     "devel",
     "esbuild",
     "linebreak",
+    "noreply",
     "outfile",
     "postpublish",
     "tada"
