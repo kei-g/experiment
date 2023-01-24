@@ -27,7 +27,7 @@ jobs:
               flags[name] = '-D'
             const { execSync } = require('node:child_process')
             for (const dependency of ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }})
-              if (dependency.packageEcosystem === 'npm') {
+              if (dependency.packageEcosystem.startsWith('npm')) {
                 const flag = flags[dependency.dependencyName]
                 if (!flag)
                   return core.setFailure(`${dependency.dependencyName} is included in neither 'dependencies' nor 'devDependencies'`)
