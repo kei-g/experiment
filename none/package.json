@@ -1,0 +1,15 @@
+{
+  "author": "kei-g",
+  "description": "None",
+  "name": "@kei-g/none",
+  "main": "none.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "github:kei-g/experiment/none",
+  "scripts": {
+    "test": ":"
+  },
+  "license": "BSD-3-Clause",
+  "version": "1.0.0-pre"
+}
