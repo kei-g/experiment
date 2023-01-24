@@ -13,7 +13,7 @@ jobs:
         uses: dependabot/fetch-metadata@v1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - if: steps.dependabot-metadata.outputs.package-ecosystem == 'npm'
+      - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm')
         name: Update 'package.json'
         uses: actions/github-script@v6
         with:
@@ -37,14 +37,14 @@ jobs:
               }
       - continue-on-error: true
         id: difference
-        if: steps.dependabot-metadata.outputs.package-ecosystem == 'npm'
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm')
         name: Check difference
         run: |
           git add -N .
           git diff --exit-code --name-only
       - env:
           GITHUB_TOKEN: secrets.GITHUB_TOKEN
-        if: steps.difference.outcome == 'failure'
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.difference.outcome == 'failure'
         name: Commit changes and push if necessary
         run: |
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
@@ -55,7 +55,7 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-        if: steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outcome == 'success'
+        if: steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && ((startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.difference.outcome == 'success') || !startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm'))
         name: Approve a PR
         run: |
           gh pr review --approve "$PR_URL"
