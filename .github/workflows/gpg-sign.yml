@@ -1,0 +1,254 @@
+jobs:
+  gpg-sign:
+    name: GPG Sign
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.ref }}
+      - id: gpg
+        name: Import a GPG key
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const child_process = require('node:child_process')
+            const process = require('node:process')
+            const runAsync = (groupName, command, args, callback) => core.group(
+              groupName,
+              () => new Promise(
+                resolve => {
+                  const child = child_process.spawn(command, args)
+                  child.on('exit', resolve)
+                  child.stderr.pipe(process.stderr)
+                  child.stdout.pipe(process.stdout)
+                  if (callback) {
+                    callback(child.stdin)
+                    child.stdin.end()
+                  }
+                }
+              )
+            )
+            await runAsync(
+              'GPG Version',
+              'gpg',
+              ['--version']
+            )
+            await runAsync(
+              'GPG directories',
+              'gpgconf',
+              ['--list-dirs']
+            )
+            const { env } = process
+            const { execSync } = child_process
+            const { mkdtempSync, unlinkSync, writeFileSync } = require('node:fs')
+            const { tmpdir } = require('node:os')
+            const { sep } = require('node:path')
+            const fingerprint = `${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}`.split('\n').filter(
+              line => line.match(/^[0-9A-F]+$/g)
+            ).join('\n')
+            const keyPath = [
+              mkdtempSync(
+                [
+                  tmpdir(),
+                  '.import-gpg-key-'
+                ].join(sep)
+              ),
+              'key.pgp',
+            ].join(sep)
+            const privateKeyData = `${{ secrets.GPG_PRIVATE_KEY }}`.split('\n').filter(
+              line => line.match(/^[0-9A-Za-z\+\/\=]+$/g)
+            ).join('\n')
+            const passphrase = Buffer.from(
+              `${{ secrets.GPG_PASSPHRASE }}`.split('\n').filter(
+                line => line.length
+              ).join('\n'),
+              'utf8'
+            ).toString('hex').toUpperCase()
+            writeFileSync(
+              keyPath,
+              Buffer.from(privateKeyData, 'base64'),
+              { mode: 0o600 }
+            )
+            await core.group(
+              'Import a GPG private key',
+              () => new Promise(
+                resolve => {
+                  const gpg = child_process.spawn(
+                    'gpg',
+                    [
+                      '--batch',
+                      '--import',
+                      '--yes',
+                      keyPath,
+                    ]
+                  )
+                  gpg.on('exit', setTimeout.bind(undefined, resolve, 1000))
+                  gpg.stderr.pipe(process.stderr)
+                  gpg.stdout.pipe(process.stdout)
+                }
+              )
+            )
+            unlinkSync(keyPath)
+            writeFileSync(
+              env.GNUPGHOME ?? [env.HOME, '.gnupg', 'gpg-agent.conf'].join(sep),
+              [
+                'default-cache-ttl 21600',
+                'max-cache-ttl 31536000',
+                'allow-preset-passphrase',
+              ].join('\n')
+            )
+            const connectAgentAsync = (name, command) => runAsync(
+              name,
+              'gpg-connect-agent',
+              [],
+              stdin => {
+                stdin.write(`${command}\n`)
+                stdin.write('/bye\n')
+              }
+            )
+            await connectAgentAsync('Reload the agent', 'reloadagent')
+            const { TZ } = env
+            env.TZ = 'Asia/Tokyo'
+            const keys = await core.group(
+              'Read secret keys',
+              () => new Promise(
+                resolve => child_process.exec(
+                  `gpg --batch --list-secret-keys --with-colons --with-keygrip ${fingerprint}`,
+                  {},
+                  (error, stdout, stderr) => {
+                    if (stderr.length)
+                      core.info(stderr.toString())
+                    if (error)
+                      return resolve(error)
+                    const ctx = {}
+                    const keys = {}
+                    for (const line of stdout.toString().replace(/\r/g, '').trim().split(/\n/g)) {
+                      const row = line.split(':').filter(column => column.length)
+                      switch (row[0]) {
+                      case 'fpr':
+                        ctx.fingerprint = row[1]
+                        keys[ctx.fingerprint] = {
+                          keyId: ctx.keyId,
+                          fingerprint: ctx.fingerprint,
+                          timestamp: ctx.timestamp,
+                        }
+                        if (ctx.isSubKey) {
+                          keys[ctx.fingerprint].keyId = ctx.originalKeyId
+                          keys[ctx.fingerprint].subKeyId = ctx.keyId
+                        }
+                        break
+                      case 'grp':
+                        keys[ctx.fingerprint].keygrip = row[1]
+                        break
+                      case 'pub':
+                        break
+                      case 'sec':
+                        ctx.originalKeyId = row[4]
+                      case 'ssb':
+                        ctx.isSubKey = row[0] === 'ssb'
+                        ctx.keyId = row[4]
+                        ctx.timestamp = new Date(Number(row[5]) * 1000).toLocaleString('ja')
+                        break
+                      case 'tru':
+                        break
+                      case 'uid':
+                        {
+                          keys[ctx.fingerprint].user = {
+                            email: row[4].split(' ')[1].replace(/(^\<|\>$)/g, ''),
+                            id: row[3],
+                            name: row[4].split(' ')[0],
+                            timestamp: new Date(Number(row[2]) * 1000).toLocaleString('ja'),
+                          }
+                        }
+                        break
+                      default:
+                        return resolve(new Error(`Unknown property '${row[0]}', ${line}`))
+                      }
+                    }
+                    core.info(JSON.stringify(keys, ' ', 2))
+                    resolve(keys)
+                  }
+                )
+              )
+            )
+            env.TZ = TZ
+            if ('message' in keys)
+              return core.setFailed(keys.message)
+            if (!(fingerprint in keys))
+              return core.setFailed(`${fingerprint} is not found`)
+            const key = keys[fingerprint]
+            await connectAgentAsync(
+              'Preset passphrase',
+              `preset_passphrase ${key.keygrip} -1 ${passphrase}`
+            )
+            core.setOutput('key-grip', key.keygrip)
+            core.setOutput('key-id', key.subKeyId ?? key.keyId)
+            if (key.subKeyId)
+              for (const fp in keys)
+                if (!keys[fp].subKeyId && key.keyId === keys[fp].keyId)
+                  key.user = keys[fp].user
+            core.startGroup('Key info')
+            core.info(JSON.stringify(key, ' ', 2))
+            core.endGroup()
+            await core.group(
+              'Configure git',
+              () => new Promise(
+                resolve => {
+                  execSync(`git config user.email ${key.user.email}`)
+                  execSync(`git config user.name ${key.user.name}`)
+                  resolve()
+                }
+              )
+            )
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: Create a commit and push it
+        run: |
+          echo "::group ::keyinfo"
+          printf 'keyinfo ${{ steps.gpg.outputs.key-grip }}\n/bye\n' | gpg-connect-agent
+          echo "::endgroup ::"
+          echo "::group ::git config"
+          printf 'user.email: %s\n' $(git config --get user.email)
+          printf 'user.name: %s\n' $(git config --get user.name)
+          printf 'user.signingkey: %s\n' $(git config --get user.signingkey || true)
+          printf 'commit.gpgsign: %s\n' $(git config --get commit.gpgsign || true)
+          echo "::endgroup ::"
+          ref=${{ github.event.ref }}
+          branch=${ref##*/}
+          [[ "$(git branch --show-current)" = "$branch" ]] \
+            || {
+              branch=${branch}-new
+              git checkout -b "$branch"
+            }
+          echo "::group ::git log"
+          git --no-pager log \
+              --date=iso-local \
+              --decorate \
+              --pretty=fuller \
+              --show-signature \
+              -1
+          echo "::endgroup ::"
+          echo this is dummy > dummy.txt
+          git add .
+          message=":robot: Sign"
+          git commit \
+              --author=. \
+              --gpg-sign=${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }} \
+              --message "$message" \
+              --signoff
+          git --no-pager log \
+              --date=iso-local \
+              --decorate \
+              --pretty=fuller \
+              --show-signature \
+              -1
+          git push --set-upstream origin "$branch"
+        shell: bash
+name: GPG Sign
+on:
+  push:
+    branches:
+      - gpg-sign
+  workflow_dispatch:

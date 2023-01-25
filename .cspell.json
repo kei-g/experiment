@@ -4,16 +4,26 @@
     "codeql",
     "commitish",
     "devel",
+    "endgroup",
     "esbuild",
     "ghaction",
+    "gnupghome",
+    "gpgconf",
     "gpgsign",
+    "keygrip",
+    "keyinfo",
     "linebreak",
     "noreply",
+    "openpgp",
     "outfile",
+    "pinentry",
     "postpublish",
+    "reloadagent",
     "signingkey",
     "signoff",
     "tada",
-    "typeof"
+    "tmpdir",
+    "typeof",
+    "updatestartuptty"
   ]
 }
