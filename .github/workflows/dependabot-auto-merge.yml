@@ -9,13 +9,13 @@ jobs:
         uses: dependabot/fetch-metadata@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+      - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Checkout the repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 1
           ref: github.event.head.ref
-      - if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+      - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Update 'package.json'
         uses: actions/github-script@v6
         with:
@@ -39,7 +39,7 @@ jobs:
               }
       - continue-on-error: true
         id: difference
-        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Check difference
         run: |
           git add -N .
@@ -51,7 +51,7 @@ jobs:
           echo "files=$files" | tee -a $GITHUB_OUTPUT
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.dependabot-metadata.outputs.package-ecosystem =~ ^npm && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outcome == 'failure'
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outcome == 'failure'
         name: Commit changes and push if necessary
         run: |
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
@@ -63,6 +63,7 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') == (steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch')
         name: Merge Dependabot PRs
         run: |
           gh pr merge --auto --merge "$pull_request_url"
