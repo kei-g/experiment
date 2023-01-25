@@ -1,17 +1,16 @@
 {
   "version": "0.2",
   "words": [
+    "chainguard",
     "codeql",
     "commitish",
     "devel",
     "esbuild",
-    "ghaction",
-    "gpgsign",
+    "gitsign",
     "linebreak",
     "noreply",
     "outfile",
     "postpublish",
-    "signingkey",
     "signoff",
     "tada",
     "typeof"
