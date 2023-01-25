@@ -167,11 +167,14 @@ jobs:
               'Preset passphrase',
               `preset_passphrase ${key.keygrip} -1 ${passphrase}`
             )
+            await connectAgentAsync('Show key info', `keyinfo ${key.keygrip}`)
             core.setOutput('key-id', key.keyId)
+            core.setOutput('keygrip', key.keygrip)
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         name: Create a commit and push it
         run: |
+          echo keyinfo ${{ steps.gpg.outputs.keygrip }} | gpg-connect-agent
           git config --local user.email ${{ github.event.pusher.email }}
           git config --local user.name ${{ github.event.pusher.name }}
           git config --local user.signingkey ${{ steps.gpg.outputs.key-id }}!
