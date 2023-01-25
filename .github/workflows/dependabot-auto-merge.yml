@@ -59,7 +59,8 @@ jobs:
           branch="${ref##*/}"
           git checkout -b "$branch"
           git add .
-          git commit --author=. -m ":robot: Update ${{ steps.difference.outputs.files }}"
+          message=":robot: Update ${{ steps.difference.outputs.files }}"
+          git commit --author=. --gpg-sign --message "$message" --signoff
           git push --set-upstream origin "$branch"
       - name: Wait 10 seconds
         run: |
