@@ -37,29 +37,30 @@ jobs:
                 console.log(`executing ${command}`)
                 execSync(command)
               }
-      - continue-on-error: true
-        id: difference
+      - id: difference
         if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Check difference
         run: |
           git add -N .
           files=$(
-            git diff --exit-code --name-only | while read name; do
+            git diff --name-only | while read name; do
               printf "'%s'\n" $name
             done | xargs
           )
           echo "files=$files" | tee -a $GITHUB_OUTPUT
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outcome == 'failure'
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outputs.files != ''
         name: Commit changes and push if necessary
         run: |
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git config user.name github-actions[bot]
-          git checkout -b ${{ github.event.head.ref }}
+          ref="${{ github.event.head.ref }}"
+          branch="${ref##*/}"
+          git checkout -b "$branch"
           git add .
           git commit --author=. -m ":robot: Update ${{ steps.difference.outputs.files }}"
-          git push
+          git push --set-upstream origin "$branch"
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
