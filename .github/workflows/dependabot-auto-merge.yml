@@ -61,13 +61,20 @@ jobs:
           git add .
           git commit --author=. -m ":robot: Update ${{ steps.difference.outputs.files }}"
           git push --set-upstream origin "$branch"
+      - name: Wait 10 seconds
+        run: |
+          sleep 10
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
         if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') == (steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch')
         name: Merge Dependabot PRs
         run: |
+          ref="${{ github.event.pull_request.head.ref }}"
+          branch="${ref##*/}"
           gh pr merge --auto --merge "$pull_request_url"
+          sleep 3
+          git push origin ":$branch"
 name: Dependabot auto-merge
 on:
   pull_request_target:
