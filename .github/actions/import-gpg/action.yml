@@ -1,0 +1,25 @@
+author: kei-g
+branding:
+  color: blue
+  icon: log-in
+description: >
+  This action imports a GPG secret key.
+inputs:
+  fingerprint:
+    description: >
+      The fingerprint of the GPG secret key.
+    required: true
+  passphrase:
+    description: >
+      The passphrase to decrypt the GPG secret key.
+    required: true
+  secret-key:
+    description: >
+      The GPG secret key to sign.
+    required: true
+name: 'Import a GPG secret key'
+runs:
+  steps:
+    - run: .github/actions/import-gpg/main.sh
+      shell: bash
+  using: composite
