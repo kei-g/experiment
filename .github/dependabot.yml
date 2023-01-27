@@ -1,6 +1,6 @@
 updates:
   - assignees:
-    - kei-g
+      - kei-g
     directory: /
     labels:
       - ci
