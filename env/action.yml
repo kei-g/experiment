@@ -11,11 +11,5 @@ inputs:
     required: true
 name: Show env
 runs:
-  steps:
-    - env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-        value: ${{ inputs.value }}
-      name: Show env
-      run: env | sort
-      shell: bash
-  using: composite
+  main: main.js
+  using: node16
