@@ -1,0 +1,16 @@
+description: >
+  This action shows env.
+inputs:
+  value:
+    description: >
+      The value.
+    required: true
+name: Show env
+runs:
+  steps:
+    - env:
+        value: ${{ inputs.value }}
+      name: Show env
+      run: env | sort
+      shell: bash
+  using: composite
