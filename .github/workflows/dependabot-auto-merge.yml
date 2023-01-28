@@ -47,7 +47,7 @@ jobs:
             execSync(`git config user.email '${email}'`)
             execSync(`git config user.name '${name}'`)
             execSync('git add .')
-            execSync(`git commit --amend --date="${date}" --no-edit`)
+            execSync(`git commit --amend --date="${date}" --gpg-sign --no-edit`)
             execSync('git push --force-with-lease')
             core.endGroup()
       - name: Wait a few seconds
