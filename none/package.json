@@ -1,8 +1,9 @@
 {
   "author": "kei-g",
   "description": "None",
-  "name": "@kei-g/none",
+  "license": "BSD-3-Clause",
   "main": "none.js",
+  "name": "@kei-g/none",
   "publishConfig": {
     "access": "public"
   },
@@ -12,6 +13,5 @@
   "scripts": {
     "test": ":"
   },
-  "license": "BSD-3-Clause",
   "version": "1.0.4"
 }
