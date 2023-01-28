@@ -20,6 +20,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            core.startGroup('Assort dependencies')
             const { readFileSync } = require('node:fs')
             const package = JSON.parse(readFileSync('package.json'))
             const flags = {}
@@ -27,6 +28,9 @@ jobs:
               flags[name] = '--save'
             for (const name of Object.keys(package.devDependencies))
               flags[name] = '-D'
+            core.info(JSON.stringify(flags, undefined, 2))
+            core.endGroup()
+            core.startGroup('Update')
             const { execSync } = require('node:child_process')
             for (const dependency of ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }})
               if (dependency.packageEcosystem.startsWith('npm')) {
@@ -34,10 +38,12 @@ jobs:
                 if (!flag)
                   return core.setFailure(`${dependency.dependencyName} is included in neither 'dependencies' nor 'devDependencies'`)
                 const command = `npm install ${dependency.dependencyName}@${dependency.newVersion} ${flag}`
-                console.log(`executing ${command}`)
+                core.info(`executing ${command}`)
                 execSync(command)
               }
-            const [date, email, name] = execSync('git --no-pager log --pretty=format:"%ad%n%ae%n%an" -1').toString().split('\n')
+            core.endGroup()
+            core.startGroup('Commit and Push')
+            const [date, email, name] = execSync('git --no-pager log --date=iso --pretty=format:"%ad%n%ae%n%an" -1').toString().split('\n')
             execSync(`git config user.email '${email}'`)
             execSync(`git config user.name '${name}'`)
             execSync('git add .')
