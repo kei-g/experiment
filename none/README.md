@@ -9,5 +9,5 @@ This is a part of [my experimental repository][github-experiment-url].
 [github-experiment-url]:https//github.com/kei-g/experiment
 [github-image]:https://img.shields.io/badge/github-%40kei--g%2fnone-brightgreen?logo=github
 [github-url]:https://github.com/kei-g/experiment/tree/main/none
-[npm-image]:https://img.shields.io/npm/v/@kei-g/experiment?logo=npm
-[npm-url]:https://npmjs.com/@kei-g/experiment
+[npm-image]:https://img.shields.io/npm/v/@kei-g/none?logo=npm
+[npm-url]:https://npmjs.com/@kei-g/none
