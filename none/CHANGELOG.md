@@ -1,5 +1,10 @@
 # Change Logs
 
+## Version 1.0.7
+
+- :sparkles: Feature is added
+  - doNothingAsync is implemented
+
 ## Version 1.0.6
 
 - :memo: Document is updated

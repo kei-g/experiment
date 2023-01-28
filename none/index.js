@@ -1,5 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.doNothing = void 0;
-const doNothing = () => undefined;
-exports.doNothing = doNothing;
+"use strict";var i=Object.defineProperty;var c=Object.getOwnPropertyDescriptor;var d=Object.getOwnPropertyNames;var r=Object.prototype.hasOwnProperty;var g=(o,n)=>{for(var e in n)i(o,e,{get:n[e],enumerable:!0})},h=(o,n,e,s)=>{if(n&&typeof n=="object"||typeof n=="function")for(let t of d(n))!r.call(o,t)&&t!==e&&i(o,t,{get:()=>n[t],enumerable:!(s=c(n,t))||s.enumerable});return o};var p=o=>h(i({},"__esModule",{value:!0}),o);var m={};g(m,{doNothing:()=>x,doNothingAsync:()=>N});module.exports=p(m);var x=()=>{},N=()=>new Promise(o=>o());0&&(module.exports={doNothing,doNothingAsync});
