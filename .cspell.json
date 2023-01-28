@@ -1,0 +1,29 @@
+{
+  "version": "0.2",
+  "words": [
+    "codeql",
+    "commitish",
+    "devel",
+    "endgroup",
+    "esbuild",
+    "ghaction",
+    "gnupghome",
+    "gpgconf",
+    "gpgsign",
+    "keygrip",
+    "keyinfo",
+    "linebreak",
+    "noreply",
+    "openpgp",
+    "outfile",
+    "pinentry",
+    "postpublish",
+    "reloadagent",
+    "signingkey",
+    "signoff",
+    "tada",
+    "tmpdir",
+    "typeof",
+    "updatestartuptty"
+  ]
+}

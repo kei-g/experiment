@@ -1,0 +1,15 @@
+description: >
+  This action shows env.
+inputs:
+  github-token:
+    description: >
+      Please pass the $GITHUB_TOKEN
+    required: true
+  value:
+    description: >
+      The value.
+    required: true
+name: Show env
+runs:
+  main: main.js
+  using: node16

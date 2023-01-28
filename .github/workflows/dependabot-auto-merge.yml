@@ -1,0 +1,64 @@
+jobs:
+  merge:
+    if: github.actor == 'dependabot[bot]'
+    name: Merge Dependabot PRs
+    runs-on: ubuntu-latest
+    steps:
+      - id: dependabot-metadata
+        name: Fetch Dependabot metadata
+        uses: dependabot/fetch-metadata@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+        name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.ref }}
+      - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+        name: Update 'package.json'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { readFileSync } = require('node:fs')
+            const package = JSON.parse(readFileSync('package.json'))
+            const flags = {}
+            for (const name of Object.keys(package.dependencies))
+              flags[name] = '--save'
+            for (const name of Object.keys(package.devDependencies))
+              flags[name] = '-D'
+            const { execSync } = require('node:child_process')
+            for (const dependency of ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }})
+              if (dependency.packageEcosystem.startsWith('npm')) {
+                const flag = flags[dependency.dependencyName]
+                if (!flag)
+                  return core.setFailure(`${dependency.dependencyName} is included in neither 'dependencies' nor 'devDependencies'`)
+                const command = `npm install ${dependency.dependencyName}@${dependency.newVersion} ${flag}`
+                console.log(`executing ${command}`)
+                execSync(command)
+              }
+            const [date, email, name] = execSync('git --no-pager log --pretty=format:"%ad%n%ae%n%an" -1').toString().split('\n')
+            execSync(`git config user.email '${email}'`)
+            execSync(`git config user.name '${name}'`)
+            execSync('git add .')
+            execSync(`git commit --amend --date="${date}" --no-edit`)
+            execSync('git push --force-with-lease')
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pull_request_url: ${{ github.event.pull_request.html_url }}
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+        name: Merge Dependabot PRs
+        run: |
+          ref="${{ github.event.pull_request.head.ref }}"
+          branch="${ref##*/}"
+          subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $branch"
+          gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
+name: Dependabot auto-merge
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+permissions:
+  contents: write
+  pull-requests: write

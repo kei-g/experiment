@@ -1,0 +1,11 @@
+jobs:
+  show-env:
+    name: Check whether if can workflows be run even in sub directories
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show env variables
+        run: env | sort
+        shell: bash
+name: SubDirectory
+on:
+  workflow_dispatch:
