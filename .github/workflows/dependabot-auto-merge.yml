@@ -1,3 +1,5 @@
+env:
+  GPG_PRIVATE_KEY_FINGERPRINT: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
 jobs:
   merge:
     if: github.actor == 'dependabot[bot]'
@@ -20,7 +22,7 @@ jobs:
         name: Import a GPG key
         uses: kei-g/experiment/.github/actions/import-gpg@main
         with:
-          fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
+          fingerprint: ${{ env.GPG_PRIVATE_KEY_FINGERPRINT }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
           secret-key: ${{ secrets.GPG_PRIVATE_KEY }}
       - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
