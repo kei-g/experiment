@@ -66,8 +66,7 @@ jobs:
         name: Merge Dependabot PRs
         run: |
           ref="${{ github.event.pull_request.head.ref }}"
-          branch="${ref##*/}"
-          subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $branch"
+          subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $ref"
           gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
 name: Dependabot auto-merge
 on:
