@@ -37,58 +37,17 @@ jobs:
                 console.log(`executing ${command}`)
                 execSync(command)
               }
-      - id: difference
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
-        name: Check difference
-        run: |
-          git add -N .
-          files=$(
-            git diff --name-only | while read name; do
-              printf "'%s'\n" $name
-            done | xargs
-          )
-          echo "files=$files" | tee -a $GITHUB_OUTPUT
-      - id: gpg
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outputs.files != ''
-        name: Import a GPG key
-        uses: kei-g/experiment/.github/actions/import-gpg@main
-        with:
-          fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          secret-key: ${{ secrets.GPG_PRIVATE_KEY }}
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' && steps.difference.outputs.files != ''
-        name: Commit changes and push if necessary
-        run: |
-          ref="${{ github.event.pull_request.head.ref }}"
-          branch="${ref##*/}"
-          [[ "$(git branch --show-current)" = "$branch" ]] \
-            || {
-              branch=${branch}-new
-              git checkout -b "$branch"
-            }
-          git add .
-          message=":robot: Update ${{ steps.difference.outputs.files }}"
-          git commit \
-              --author=. \
-              --gpg-sign=${{ steps.gpg.outputs.fingerprint }} \
-              --message "$message" \
-              --signoff
-          git push --set-upstream origin "$branch"
-      - name: Wait 10 seconds
-        run: |
-          sleep 10
+            execSync('git commit --allow-empty --allow-empty-message')
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') == (steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch')
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Merge Dependabot PRs
         run: |
           ref="${{ github.event.pull_request.head.ref }}"
           branch="${ref##*/}"
           subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $branch"
-          gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
+          gh pr merge --auto --merge --squash --subject "$subject" "$pull_request_url"
           sleep 3
           git push origin ":$branch"
 name: Dependabot auto-merge
