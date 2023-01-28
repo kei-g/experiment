@@ -1,17 +1,11 @@
 env:
-  fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
+  FOO: ${{ vars.FOO }}
 jobs:
   merge:
     if: github.actor == 'dependabot[bot]'
     name: Merge Dependabot PRs
     runs-on: ubuntu-latest
     steps:
-      - name: Save the fingerprint, '${{ env.fingerprint }}'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fingerprint = process.env['fingerprint']
-            core.saveState('fingerprint', fingerprint)
       - id: dependabot-metadata
         name: Fetch Dependabot metadata
         uses: dependabot/fetch-metadata@v1
@@ -23,23 +17,6 @@ jobs:
         with:
           fetch-depth: 1
           ref: ${{ github.event.pull_request.head.ref }}
-      - id: state
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
-        name: Restore the fingerprint
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fingerprint = core.getState('fingerprint')
-            core.info(`fingerprint=${fingerprint}`)
-            core.setOutput('fingerprint', fingerprint)
-      - id: gpg
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
-        name: Import a GPG key
-        uses: kei-g/experiment/.github/actions/import-gpg@main
-        with:
-          fingerprint: ${{ steps.state.outputs.fingerprint }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          secret-key: ${{ secrets.GPG_PRIVATE_KEY }}
       - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Update 'package.json'
         uses: actions/github-script@v6
