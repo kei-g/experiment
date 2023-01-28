@@ -28,6 +28,7 @@
       "error",
       "unix"
     ],
+    "no-empty-function": "off",
     "quotes": [
       "error",
       "single"
