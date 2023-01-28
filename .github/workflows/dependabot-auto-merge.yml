@@ -42,7 +42,7 @@ jobs:
             execSync(`git config user.name '${name}'`)
             execSync('git add .')
             execSync(`git commit --amend --date="${date}" --no-edit`)
-            execSync('git push')
+            execSync('git push --force-with-lease')
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
