@@ -4,7 +4,6 @@
   "check-coverage": true,
   "exclude": [
     "**/*.spec.ts",
-    "**/env.ts",
     "**/index.ts"
   ],
   "extension": [
