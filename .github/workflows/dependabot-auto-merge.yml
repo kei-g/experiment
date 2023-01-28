@@ -37,11 +37,11 @@ jobs:
                 console.log(`executing ${command}`)
                 execSync(command)
               }
-            const [email, name] = execSync('git --no-pager log --pretty=format:"%ae%n%an" -1').toString().split('\n')
+            const [date, email, name] = execSync('git --no-pager log --pretty=format:"%ad%n%ae%n%an" -1').toString().split('\n')
             execSync(`git config user.email '${email}'`)
             execSync(`git config user.name '${name}'`)
             execSync('git add .')
-            execSync('git commit --allow-empty --message=":arrow_up: Bump packages"')
+            execSync(`git commit --amend --date="${date}" --no-edit`)
             execSync('git push')
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,7 +52,7 @@ jobs:
           ref="${{ github.event.pull_request.head.ref }}"
           branch="${ref##*/}"
           subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $branch"
-          gh pr merge --auto --squash --subject "$subject" "$pull_request_url"
+          gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
 name: Dependabot auto-merge
 on:
   pull_request_target:
