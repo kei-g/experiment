@@ -37,7 +37,11 @@ jobs:
                 console.log(`executing ${command}`)
                 execSync(command)
               }
-            execSync('git commit --allow-empty --allow-empty-message')
+            const [email, name] = execSync('git --no-pager log --pretty=format:"%ae%n%an" -1').toString().split('\n')
+            execSync(`git config user.email '${email}'`)
+            execSync(`git config user.name '${name}'`)
+            execSync('git add .')
+            execSync('git commit --allow-empty --message=":arrow_up: Bump packages"')
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
