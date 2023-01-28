@@ -49,6 +49,16 @@ jobs:
             execSync('git add .')
             execSync(`git commit --amend --date="${date}" --no-edit`)
             execSync('git push --force-with-lease')
+            core.endGroup()
+      - name: Wait a few seconds
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const msec = Math.floor(4000 + Math.random() * 6000)
+            core.info(`Wait ${msec}(msec)`)
+            await new Promise(
+              resolve => setTimeout(resolve, msec)
+            )
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
