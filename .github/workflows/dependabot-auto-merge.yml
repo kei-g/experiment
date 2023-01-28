@@ -15,6 +15,14 @@ jobs:
         with:
           fetch-depth: 1
           ref: ${{ github.event.pull_request.head.ref }}
+      - id: gpg
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+        name: Import a GPG key
+        uses: kei-g/experiment/.github/actions/import-gpg@main
+        with:
+          fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          secret-key: ${{ secrets.GPG_PRIVATE_KEY }}
       - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
         name: Update 'package.json'
         uses: actions/github-script@v6
@@ -43,11 +51,9 @@ jobs:
               }
             core.endGroup()
             core.startGroup('Commit and Push')
-            const [date, email, name] = execSync('git --no-pager log --date=iso --pretty=format:"%ad%n%ae%n%an" -1').toString().split('\n')
-            execSync(`git config user.email '${email}'`)
-            execSync(`git config user.name '${name}'`)
             execSync('git add .')
-            execSync(`git commit --allow-empty --date="${date}" --message=":arrow_up: Update 'package.json'"`)
+            const fingerprint = ${{ steps.gpg.outputs.fingerprint }}
+            execSync(`git commit --allow-empty --gpg-sign=${fingerprint} --message=":arrow_up: Update 'package.json'" --signoff`)
             execSync('git push')
             core.endGroup()
       - name: Wait a few seconds
@@ -67,13 +73,10 @@ jobs:
         run: |
           ref="${{ github.event.pull_request.head.ref }}"
           subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $ref"
-          gh pr merge --auto --squash --subject "$subject" "$pull_request_url"
+          gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
 name: Dependabot auto-merge
 on:
   pull_request_target:
     types:
       - opened
       - reopened
-permissions:
-  contents: write
-  pull-requests: write
