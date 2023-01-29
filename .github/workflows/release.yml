@@ -77,30 +77,30 @@ jobs:
           git_user_signingkey: true
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          cache: 'npm'
-          node-version: 19
-          registry-url: 'https://registry.npmjs.org'
       - id: version
         name: Bump the version
         run: |
           cd none
           current=$(jq -Mcr '.version' < package.json)
+          version=$(
+            npm version patch --no-git-tag-version \
+            | tee >(cat >&2)
+          )
+          echo ::group ::Outputs
           echo from=$current | tee -a $GITHUB_OUTPUT
-          version=$(npm version patch --no-git-tag-version)
           echo to=${version:1} | tee -a $GITHUB_OUTPUT
+          echo ::endgroup ::
         shell: bash
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        name: Commit and push and create a pull request
+        id: commit
+        name: Commit changes
         run: |
           version=${{ steps.version.outputs.to }}
           git config user.email ${{ github.event.pusher.email }}
           git config user.name ${{ github.event.pusher.name }}
           git add .
-          branch=none-$version
+          branch=kei-g/none-$version
           git checkout -b $branch
           message=":bookmark: Bump the version of @kei-g/none to $version"
           git commit \
@@ -108,21 +108,37 @@ jobs:
               --gpg-sign=${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }} \
               --message "$message" \
               --signoff
-          git push --set-upstream origin $branch
-          body="This PR bumps the version of @kei-g/none from ${{ steps.version.outputs.from}} to $version"
-          pull_request_url=$(gh pr create --base main --body "$body" --title "$message")
-          sleep 10
-          subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $branch"
-          gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
-          sleep 3
-          git push origin :$branch
-        shell: bash
+          echo ::group ::Outputs
+          echo "branch=$branch" | tee -a $GITHUB_OUTPUT
+          echo "message=$message" | tee -a $GITHUB_OUTPUT
+          echo ::endgroup ::
       - env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        name: Publish @kei-g/none
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.commit.outputs.branch }}
+        name: Push the commit
+        run: git push --set-upstream origin $branch
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          message: ${{ steps.commit.outputs.message }}
+          version_from: ${{ steps.version.outputs.from }}
+          version_to: ${{ steps.version.outputs.to }}
+        id: create-pull-request
+        name: Create a PR
         run: |
-          cd none
-          npm publish
+          body="This PR bumps the version of @kei-g/none from $version_from to $version_to"
+          pull_request_url=$(
+            gh pr create \
+              --base main \
+              --body "$body" \
+              --reviewer $GITHUB_REPOSITORY_OWNER \
+              --title "$message" \
+            | tee >(cat >&2)
+          )
+          echo ::group ::Outputs
+          echo "PR_ID=${pull_request_url##*/}" | tee -a $GITHUB_OUTPUT
+          echo "PR_URL=$pull_request_url" | tee -a $GITHUB_OUTPUT
+          echo ::endgroup ::
+        shell: bash
   npm:
     if: github.ref_type == 'tag'
     name: Publish

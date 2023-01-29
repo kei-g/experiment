@@ -1,7 +1,7 @@
 jobs:
-  approve:
+  dependabot:
     if: github.actor == 'dependabot[bot]'
-    name: Approve
+    name: Approve a PR from Dependabot[bot]
     runs-on: ubuntu-latest
     steps:
       - id: dependabot-metadata
@@ -16,6 +16,37 @@ jobs:
         name: Approve a PR
         run: |
           gh pr review --approve "$PR_URL"
+  github:
+    if: startsWith(github.event.head_commit.message, ':bookmark:\ Bump the version of @kei-g/none to ')
+    name: Approve a PR with commit message, "${{ github.event.head_commit.message }}"
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        name: Approve a PR
+        run: |
+          gh pr review --approve "$PR_URL"
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.commit.outputs.branch }}
+        name: Delete the branch
+        run: |
+          git push origin :$branch
+      - if: false
+        name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: npm
+          node-version: 19
+          registry-url: 'https://registry.npmjs.org'
+      - env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: false
+        name: Publish @kei-g/none v{{ steps.version.outputs.to }}
+        run: |
+          cd none
+          npm publish
 name: Dependabot auto-approve
 on:
   pull_request_target:
