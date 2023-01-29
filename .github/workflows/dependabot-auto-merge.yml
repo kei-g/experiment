@@ -9,91 +9,18 @@ jobs:
         uses: dependabot/fetch-metadata@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
-        name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
-          ref: ${{ github.event.pull_request.head.ref }}
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
-        name: Update 'package.json'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            core.startGroup('Assort dependencies')
-            const { readFileSync } = require('node:fs')
-            const package = JSON.parse(readFileSync('package.json'))
-            const flags = {}
-            for (const name of Object.keys(package.dependencies))
-              flags[name] = '--save'
-            for (const name of Object.keys(package.devDependencies))
-              flags[name] = '-D'
-            core.info(JSON.stringify(flags, undefined, 2))
-            core.endGroup()
-            core.startGroup('Update')
-            const { execSync, spawn } = require('node:child_process')
-            for (const dependency of ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }})
-              if (dependency.packageEcosystem.startsWith('npm')) {
-                const flag = flags[dependency.dependencyName]
-                if (!flag)
-                  return core.setFailure(`${dependency.dependencyName} is included in neither 'dependencies' nor 'devDependencies'`)
-                const command = `npm install ${dependency.dependencyName}@${dependency.newVersion} ${flag}`
-                core.info(`executing ${command}`)
-                execSync(command)
-              }
-            core.endGroup()
-            core.startGroup('Commit and Push')
-            const ref = '${{ github.event.pull_request.head.ref }}'
-            const sha = execSync(`git rev-parse ${ref}:package.json`).toString()
-            const content = Buffer.from(readFileSync('package.json'), 'utf8').toString('base64')
-            await new Promise(
-              resolve => {
-                const payload = [
-                  'api',
-                  '--method',
-                  'PUT',
-                  '/repos/kei-g/experiment/contents/package.json',
-                  '--field',
-                  `branch="${ref}"`,
-                  '--field',
-                  `content="${content}"`,
-                  '--field',
-                  `message=":arrow_up: Update 'package.json'"`,
-                  '--field',
-                  `sha=${sha}`,
-                ]
-                core.info(JSON.stringify({ payload }, undefined, 2))
-                const gh = spawn('gh', payload)
-                const { stderr, stdout } = require('node:process')
-                gh.stderr.pipe(stderr)
-                gh.stdout.on('close', resolve)
-                gh.stdout.on('data', chunk => stdout.write(chunk))
-              }
-            )
-            core.endGroup()
-      - name: Wait a few seconds
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const msec = Math.floor(4000 + Math.random() * 6000)
-            core.info(`Wait ${msec}(msec)`)
-            await new Promise(
-              resolve => setTimeout(resolve, msec)
-            )
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'
+        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm')
         name: Merge Dependabot PRs
         run: |
           ref="${{ github.event.pull_request.head.ref }}"
           subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $ref"
-          gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
+          gh pr merge --merge --subject "$subject" "$pull_request_url"
 name: Dependabot auto-merge
 on:
   pull_request_target:
     types:
       - opened
-      - reopened
+      - synchronize
