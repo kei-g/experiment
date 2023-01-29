@@ -12,7 +12,6 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pull_request_url: ${{ github.event.pull_request.html_url }}
-        if: startsWith(steps.dependabot-metadata.outputs.package-ecosystem, 'npm')
         name: Merge Dependabot PRs
         run: |
           ref="${{ github.event.pull_request.head.ref }}"
