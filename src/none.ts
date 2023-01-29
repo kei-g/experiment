@@ -1,6 +1,6 @@
-export const doNothing = () => {
+export const doNothing = (..._args: unknown[]) => {
 }
 
-export const doNothingAsync = () => new Promise<void>(
+export const doNothingAsync = (..._args: unknown[]) => new Promise<void>(
   (resolve) => resolve()
 )
