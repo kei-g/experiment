@@ -10,6 +10,7 @@
     "gnupghome",
     "gpgconf",
     "gpgsign",
+    "hexdump",
     "keygrip",
     "keyinfo",
     "linebreak",
@@ -24,6 +25,7 @@
     "tada",
     "tmpdir",
     "typeof",
-    "updatestartuptty"
+    "updatestartuptty",
+    "urandom"
   ]
 }

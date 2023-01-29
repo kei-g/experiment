@@ -1,0 +1,58 @@
+jobs:
+  always:
+    if: ${{ always() }}
+    name: Always
+    needs:
+      - oracle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello
+        run: echo Hello
+  failure:
+    if: ${{ failure() }}
+    name: Failure
+    needs:
+      - oracle
+    runs-on: ubuntu-latest
+    steps:
+      - name: World
+        run: echo World
+  oracle:
+    name: Get an Oracle
+    runs-on: ubuntu-latest
+    steps:
+      - id: oracle
+        name: Get an Oracle
+        run: |
+          value=$(hexdump -n 4 -e '"%u\n"' < /dev/urandom)
+          echo ::group ::Outputs
+          echo value=$value | tee -a $GITHUB_OUTPUT
+          echo ::endgroup ::
+      - continue-on-error: true
+        env:
+          oracle: ${{ toJSON(steps.oracle) }}
+          value: ${{ steps.oracle.outputs.value }}
+        id: exit
+        name: Exit
+        run: |
+          exit $(echo $((value % 2)))
+        shell: bash
+      - env:
+          value: ${{ steps.oracle.outputs.value }}
+        if: ${{ always() }}
+        name: Show the content of steps.exit
+        run: |
+          printf '%s\n' '${{ toJSON(steps.exit) }}'
+          exit $(echo $((value % 2)))
+  success:
+    if: ${{ success() }}
+    name: Success
+    needs:
+      - oracle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Never
+        run: echo Never reach here
+name: Always Failure Success
+on:
+  workflow_dispatch:
