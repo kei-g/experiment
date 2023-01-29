@@ -14,6 +14,7 @@
     "keygrip",
     "keyinfo",
     "linebreak",
+    "mktemp",
     "noreply",
     "openpgp",
     "outfile",
