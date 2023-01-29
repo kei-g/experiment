@@ -11,12 +11,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          pull_request_head_ref: ${{ github.event.pull_request.head.ref }}
-          pull_request_url: ${{ github.event.pull_request.html_url }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
         name: Merge Dependabot PRs
         run: |
-          subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from ${pull_request_head_ref}"
-          gh pr merge --merge --subject "$subject" "$pull_request_url"
+          subject=":twisted_rightwards_arrows: Merge pull request #${PR_URL##*/} from $PR_HEAD_REF"
+          gh pr merge --merge --subject "$subject" "$PR_URL"
 name: Dependabot auto-merge
 on:
   pull_request_target:
