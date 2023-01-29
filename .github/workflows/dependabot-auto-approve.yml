@@ -1,7 +1,7 @@
 jobs:
-  approve:
+  dependabot:
     if: github.actor == 'dependabot[bot]'
-    name: Approve
+    name: Approve a PR from Dependabot[bot]
     runs-on: ubuntu-latest
     steps:
       - id: dependabot-metadata
