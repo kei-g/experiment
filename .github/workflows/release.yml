@@ -112,6 +112,8 @@ jobs:
           body="This PR bumps the version of @kei-g/none from ${{ steps.version.outputs.from}} to $version"
           pull_request_url=$(gh pr create --base main --body "$body" --title "$message")
           sleep 10
+          gh pr review --approve "${pull_request_url##*/}"
+          sleep 3
           subject=":twisted_rightwards_arrows: Merge pull request #${pull_request_url##*/} from $branch"
           gh pr merge --auto --merge --subject "$subject" "$pull_request_url"
           sleep 3
