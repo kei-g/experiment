@@ -14,9 +14,24 @@ done < <(env -0)
 echo OK
 echo ::endgroup ::
 
+# Import the GPG public key
+[[ -n "${env[public-key]}" ]] && {
+  echo ::group ::Import the GPG public key
+  tmpdir=$(mktemp -d)
+  key=$tmpdir/${env[fingerprint]}.pub
+  echo "${env[public-key]}" > $key
+  gpg --batch --import --yes $key
+  rm -fr $tmpdir
+  echo ::endgroup ::
+}
+
 # Import the GPG secret key
 echo ::group ::Import the GPG secret key
-echo "${env[secret-key]}" | gpg --batch --import --yes || true
+tmpdir=$(mktemp -d)
+key=$tmpdir/${env[fingerprint]}.key
+echo "${env[secret-key]}" > $key
+gpg --batch --import --yes $key
+rm -fr $tmpdir
 echo ::endgroup ::
 
 # Reload GPG Agent

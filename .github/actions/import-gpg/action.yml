@@ -13,6 +13,10 @@ inputs:
     description: >
       The passphrase to decrypt the GPG secret key.
     required: true
+  public-key:
+    description: >
+      The GPG public key corresponding to the `secret-key`.
+    required: false
   secret-key:
     description: >
       The GPG secret key to sign.
@@ -48,6 +52,7 @@ runs:
     - env:
         fingerprint: ${{ inputs.fingerprint }}
         passphrase: ${{ inputs.passphrase }}
+        public-key: ${{ inputs.public-key }}
         secret-key: ${{ inputs.secret-key }}
       id: main
       name: Import GPG secret key

@@ -9,11 +9,12 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.event.ref }}
       - id: gpg
-        name: Import a GPG key
+        name: Import GPG keys
         uses: kei-g/experiment/.github/actions/import-gpg@main
         with:
           fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          public-key: ${{ vars.GPG_PUBLIC_KEY }}
           secret-key: ${{ secrets.GPG_PRIVATE_KEY }}
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
