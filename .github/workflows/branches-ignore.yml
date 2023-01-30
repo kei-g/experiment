@@ -1,0 +1,15 @@
+jobs:
+  branches-ignore:
+    name: Ignore branches either created or pushed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output the event name
+        run: |
+          echo ${{ github.event_name}}
+name: Ignore branches either created or pushed
+on:
+  push:
+    branches-ignore:
+      - '**'
+    tags:
+      - v[0-9]+(\.[0-9]+)*(\-[0-9A-Za-z]+)*
