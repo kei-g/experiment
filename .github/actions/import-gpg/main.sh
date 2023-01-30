@@ -70,7 +70,7 @@ while read -r line; do
         [[ "${!key[@]}" =~ fingerprint ]] \
           || {
             key[id]=${cols[4]}
-            key[timestamp]=$(date -d @${cols[5]} "+%Y/%m/%d %H:%M:%S")
+            key[timestamp]=$(date -d @${cols[5]} "+%Y/%m/%d %H:%M:%S %Z")
             unset key[keygrip]
             unset key[primary]
             unset key[primary-timestamp]
@@ -83,7 +83,7 @@ while read -r line; do
             key[primary]=${key[id]}
             key[id]=${cols[4]}
             key[primary-timestamp]=${key[timestamp]}
-            key[timestamp]=$(date -d @${cols[5]} "+%Y/%m/%d %H:%M:%S")
+            key[timestamp]=$(date -d @${cols[5]} "+%Y/%m/%d %H:%M:%S %Z")
           }
         echo [subkey] ${cols[4]}
       ;;
