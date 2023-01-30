@@ -113,11 +113,13 @@ git config --global user.email "${key[mail]}"
 git config --global user.name "${key[name]}"
 
 # Output
-cat << _EOT_ | tee -a $GITHUB_OUTPUT
+echo ::group ::Outputs
+cat << _EOT_
 created-at=${key[timestamp]}
 email=${key[mail]}
 fingerprint=${key[fingerprint]}
 id=${key[id]}
 keygrip=${key[keygrip]}
 user=${key[name]}
-_EOT_
+_EOT_ | tee -a $GITHUB_OUTPUT
+echo ::endgroup ::
