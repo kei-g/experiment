@@ -12,7 +12,6 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-        if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         name: Approve a PR
         run: |
           gh pr review --approve "$PR_URL"
@@ -21,6 +20,7 @@ on:
   pull_request_target:
     types:
       - opened
+      - reopened
 permissions:
   contents: write
   pull-requests: write
