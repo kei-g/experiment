@@ -1,0 +1,12 @@
+jobs:
+  multiline-input:
+    name: Multiline Input Caller
+    uses: ./.github/workflows/multiline-input-callee.yml
+    with:
+      value: |
+        foo
+        bar
+        baz
+name: Multiline Input Caller
+on:
+  workflow_dispatch:

@@ -1,0 +1,24 @@
+jobs:
+  multiline-input:
+    name: Multiline Input Callee
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          inputs: ${{ toJSON(inputs) }}
+        name: Run
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { env } = require('node:process')
+            const inputs = JSON.parse(env.inputs)
+            core.startGroup('Input values')
+            core.info(JSON.stringify(inputs, undefined, 2))
+            core.endGroup()
+name: Multiline Input Callee
+on:
+  workflow_call:
+    inputs:
+      name:
+        type: string
+      value:
+        type: string
