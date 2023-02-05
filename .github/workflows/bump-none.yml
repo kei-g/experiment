@@ -35,7 +35,7 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.event.ref }}
       - name: Import GPG Keys
-        uses: kei-g/experiment/.github/actions/import-gpg@main
+        uses: kei-g/github/import-gpg@main
         with:
           fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -136,7 +136,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Import GPG Secret Key
-        uses: kei-g/experiment/.github/actions/import-gpg@main
+        uses: kei-g/github/import-gpg@main
         with:
           fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}

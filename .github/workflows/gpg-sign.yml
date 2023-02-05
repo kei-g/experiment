@@ -10,7 +10,7 @@ jobs:
           ref: ${{ github.event.ref }}
       - id: gpg
         name: Import GPG keys
-        uses: kei-g/experiment/.github/actions/import-gpg@main
+        uses: kei-g/github/import-gpg@main
         with:
           fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
