@@ -1,0 +1,18 @@
+jobs:
+  checkout:
+    name: Checkout the repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: kei-g/github/checkout@main
+        with:
+          paths-to-hash: |
+            .github/**/*.yml
+            src/**/*.ts
+            test/**/*.ts
+            package-lock.json
+            package.json
+          token: ${{ github.token }}
+name: Checkout
+on:
+  workflow_dispatch:
