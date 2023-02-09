@@ -1,7 +1,7 @@
 jobs:
   approve:
     continue-on-error: true
-    if: ${{ success() }}
+    if: ${{ github.event_name == 'pull_request_target' && needs.bump.outputs.outcome == 'success' }}
     name: Approve the PR
     needs:
       - bump
@@ -200,6 +200,9 @@ jobs:
           npm publish
 name: Bump @kei-g/none
 on:
+  pull_request_target:
+    types:
+      - opened
   push:
     branches:
       - main
