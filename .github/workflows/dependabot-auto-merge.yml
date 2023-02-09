@@ -1,14 +1,21 @@
 jobs:
-  merge:
-    if: github.actor == 'dependabot[bot]'
-    name: Merge Dependabot PRs
+  approve:
+    if: github.actor == 'dependabot[bot]' || github.event_name == 'workflow_dispatch'
+    name: Approve a PR from Dependabot[bot]
     runs-on: ubuntu-latest
     steps:
-      - id: dependabot-metadata
-        name: Fetch Dependabot metadata
-        uses: dependabot/fetch-metadata@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        name: Approve a PR
+        run: |
+          gh pr review --approve "$PR_URL"
+  merge:
+    name: Merge Dependabot PRs
+    needs:
+      - approve
+    runs-on: ubuntu-latest
+    steps:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
@@ -22,4 +29,6 @@ on:
   pull_request_target:
     types:
       - opened
+      - reopened
       - synchronize
+  workflow_dispatch:
