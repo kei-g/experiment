@@ -20,15 +20,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         name: Create a commit and push it
         run: |
-          echo "::group ::keyinfo"
+          echo ::group::keyinfo
           printf 'keyinfo ${{ steps.gpg.outputs.keygrip }}\n/bye\n' | gpg-connect-agent
-          echo "::endgroup ::"
-          echo "::group ::git config"
+          echo ::endgroup::
+          echo ::group::git config"
           printf 'user.email: %s\n' $(git config --get user.email)
           printf 'user.name: %s\n' $(git config --get user.name)
           printf 'user.signingkey: %s\n' $(git config --get user.signingkey || true)
           printf 'commit.gpgsign: %s\n' $(git config --get commit.gpgsign || true)
-          echo "::endgroup ::"
+          echo ::endgroup::
           ref=${{ github.event.ref }}
           branch=${ref##*/}
           [[ "$(git branch --show-current)" = "$branch" ]] \
@@ -36,14 +36,14 @@ jobs:
               branch=${branch}-new
               git checkout -b "$branch"
             }
-          echo "::group ::git log"
+          echo ::group::git log
           git --no-pager log \
               --date=iso-local \
               --decorate \
               --pretty=fuller \
               --show-signature \
               -1
-          echo "::endgroup ::"
+          echo ::endgroup::
           echo this is dummy > dummy.txt
           git add .
           message=":robot: Sign"

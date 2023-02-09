@@ -50,10 +50,12 @@ jobs:
             npm version patch --no-git-tag-version \
             | tee >(cat >&2)
           )
-          echo ::group ::Outputs
-          echo from=$current | tee -a $GITHUB_OUTPUT
-          echo to=${version:1} | tee -a $GITHUB_OUTPUT
-          echo ::endgroup ::
+          echo ::group::Outputs
+          {
+            echo from=$current
+            echo to=${version:1}
+          } | tee -a $GITHUB_OUTPUT
+          echo ::endgroup::
         shell: bash
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -73,10 +75,12 @@ jobs:
               --gpg-sign=$fingerprint \
               --message "$message" \
               --signoff
-          echo ::group ::Outputs
-          echo "branch=$branch" | tee -a $GITHUB_OUTPUT
-          echo "message=$message" | tee -a $GITHUB_OUTPUT
-          echo ::endgroup ::
+          echo ::group::Outputs
+          {
+            echo "branch=$branch"
+            echo "message=$message"
+          } | tee -a $GITHUB_OUTPUT
+          echo ::endgroup::
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ steps.commit.outputs.branch }}
@@ -98,10 +102,12 @@ jobs:
               --title "$message" \
             | tee >(cat >&2)
           )
-          echo ::group ::Outputs
-          echo "PR_ID=${pull_request_url##*/}" | tee -a $GITHUB_OUTPUT
-          echo "PR_URL=$pull_request_url" | tee -a $GITHUB_OUTPUT
-          echo ::endgroup ::
+          echo ::group::Outputs
+          {
+            echo "PR_ID=${pull_request_url##*/}"
+            echo "PR_URL=$pull_request_url"
+          } | tee -a $GITHUB_OUTPUT
+          echo ::endgroup::
         shell: bash
   delete-stale-branch:
     if: ${{ needs.bump.outputs.outcome == 'success' }}
@@ -150,12 +156,12 @@ jobs:
         run: |
           main=$(git branch --show-current)
           echo "This step is attempted to merge $branch to $main"
-          echo "::group ::Fetch remote $branch branch and switch back to $main branch"
+          echo "::group::Fetch remote $branch branch and switch back to $main branch"
           git fetch origin "$branch"
           git checkout "$branch"
           git switch "$main"
-          echo ::endgroup ::
-          echo ::group ::Merge
+          echo ::endgroup::
+          echo ::group::Merge
           git merge \
             --gpg-sign \
             --message="$message" \
@@ -163,7 +169,7 @@ jobs:
             --progress \
             --signoff \
             "$branch"
-          echo ::endgroup ::
+          echo ::endgroup::
       - id: push
         name: Push the commit
         run: |

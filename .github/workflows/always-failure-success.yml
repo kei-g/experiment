@@ -25,9 +25,9 @@ jobs:
         name: Get an Oracle
         run: |
           value=$(hexdump -n 4 -e '"%u\n"' < /dev/urandom)
-          echo ::group ::Outputs
+          echo ::group::Outputs
           echo value=$value | tee -a $GITHUB_OUTPUT
-          echo ::endgroup ::
+          echo ::endgroup::
       - continue-on-error: true
         env:
           oracle: ${{ toJSON(steps.oracle) }}
