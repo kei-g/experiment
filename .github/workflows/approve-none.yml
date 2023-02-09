@@ -1,0 +1,50 @@
+jobs:
+  approve:
+    continue-on-error: true
+    name: Approve the PR
+    outputs:
+      branch: ${{ steps.approve.outputs.branch }}
+      id: ${{ steps.approve.outputs.id }}
+      outcome: ${{ steps.approve.outcome }}
+      title: ${{ steps.approve.outputs.title }}
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        id: approve
+        name: Approve the PR
+        run: |
+          id=${PR_URL##*/}
+          read -r branch title < <(
+            gh pr view --json headRefName,title $id \
+              | jq -Mcr '.headRefName,.title'
+          )
+          echo ::group::Outputs
+          {
+            echo "branch=$branch"
+            echo "id=$id"
+            echo "title=$title"
+          } | tee -a $GITHUB_OUTPUT
+          echo ::endgroup::
+          gh pr review --approve "$PR_URL"
+  invoke-merge:
+    name: Invoke a workflow to merge the PR
+    needs:
+      - approve
+    uses: ./.github/workflows/publish-none.yml@main
+    with:
+      branch: ${{ needs.approve.outputs.branch }}
+      id: ${{ needs.approve.outputs.id }}
+      outcome: ${{ needs.approve.outputs.outcome }}
+      ref: ${{ github.event.pull_request.head.ref }}
+      title: ${{ needs.approve.outputs.title }}
+      url: ${{ github.event.pull_request.html_url }}
+name: Approve Bump @kei-g/none
+on:
+  pull_request_target:
+    branches:
+      - 'kei\-g/none\-[0-9]+(\.[0-9]+){2}'
+    types:
+      - opened

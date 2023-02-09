@@ -1,21 +1,4 @@
 jobs:
-  approve:
-    continue-on-error: true
-    if: ${{ success() }}
-    name: Approve the PR
-    needs:
-      - bump
-    outputs:
-      outcome: ${{ steps.approve.outcome }}
-    runs-on: ubuntu-latest
-    steps:
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ needs.bump.outputs.PR_URL }}
-        id: approve
-        name: Approve the PR "#${{ needs.bump.outputs.PR_ID }}"
-        run: |
-          gh pr review --approve "$PR_URL"
   bump:
     if: github.event_name == 'push' && github.ref_type == 'branch' && startsWith(github.event.head_commit.message, ':bookmark:\ Bump the version of @kei-g/none to ') == false
     name: Create a pull request bumping the version in order to publish @kei-g/none
@@ -109,95 +92,6 @@ jobs:
           } | tee -a $GITHUB_OUTPUT
           echo ::endgroup::
         shell: bash
-  delete-stale-branch:
-    if: ${{ needs.bump.outputs.outcome == 'success' }}
-    name: Delete stale branch
-    needs:
-      - bump
-      - merge
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
-      - env:
-          branch: ${{ needs.bump.outputs.branch }}
-        name: Delete the stale branch, ${{ needs.bump.outputs.branch }}
-        run: |
-          git push origin :$branch
-  merge:
-    continue-on-error: true
-    if: ${{ needs.bump.outputs.outcome == 'success' }}
-    name: Merge the PR
-    needs:
-      - approve
-      - bump
-    outputs:
-      outcome: ${{ steps.push.outcome }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
-      - name: Import GPG Secret Key
-        uses: kei-g/github/import-gpg@main
-        with:
-          fingerprint: ${{ vars.GPG_PRIVATE_KEY_FINGERPRINT }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          public-key: ${{ vars.GPG_PUBLIC_KEY }}
-          secret-key: ${{ secrets.GPG_PRIVATE_KEY }}
-      - env:
-          branch: ${{ needs.bump.outputs.branch }}
-          message: ${{ needs.bump.outputs.message }}
-        id: merge
-        name: Merge the PR "#${{ needs.bump.outputs.PR_ID }}"
-        run: |
-          main=$(git branch --show-current)
-          echo "This step is attempted to merge $branch to $main"
-          echo "::group::Fetch remote $branch branch and switch back to $main branch"
-          git fetch origin "$branch"
-          git checkout "$branch"
-          git switch "$main"
-          echo ::endgroup::
-          echo ::group::Merge
-          git merge \
-            --gpg-sign \
-            --message="$message" \
-            --no-ff \
-            --progress \
-            --signoff \
-            "$branch"
-          echo ::endgroup::
-      - id: push
-        name: Push the commit
-        run: |
-          git push --set-upstream origin main
-  publish:
-    if: ${{ needs.merge.outputs.outcome == 'success' }}
-    name: Publish @kei-g/none
-    needs:
-      - bump
-      - merge
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          cache: npm
-          node-version: 19
-          registry-url: 'https://registry.npmjs.org'
-      - env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        name: Publish @kei-g/none v{{ needs.bump.outputs.version-to }}
-        run: |
-          cd none
-          npm publish
 name: Bump @kei-g/none
 on:
   push:
