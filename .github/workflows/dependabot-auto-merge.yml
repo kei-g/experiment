@@ -1,16 +1,23 @@
 jobs:
   approve:
-    if: github.actor == 'dependabot[bot]' || github.event_name == 'workflow_dispatch'
+    if: github.actor == 'dependabot[bot]'
     name: Approve a PR from Dependabot[bot]
+    outputs:
+      outcome: ${{ steps.approve.outcome }}
     runs-on: ubuntu-latest
     steps:
       - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          token: ${{ secrets.MY_TOKEN }}
+          url: ${{ github.event.pull_request.html_url }}
+        id: approve
         name: Approve a PR
         run: |
-          gh pr review --approve "$PR_URL"
+          export GITHUB_TOKEN=
+          gh auth login --with-token <<< $token
+          gh pr review --approve $url
+        shell: bash
   merge:
+    if: ${{ needs.approve.outputs.outcome == 'success' }}
     name: Merge Dependabot PRs
     needs:
       - approve
@@ -23,12 +30,10 @@ jobs:
         name: Merge Dependabot PRs
         run: |
           subject=":twisted_rightwards_arrows: Merge pull request #${PR_URL##*/} from $PR_HEAD_REF"
-          gh pr merge --merge --subject "$subject" "$PR_URL"
+          gh pr merge --auto --merge --subject "$subject" "$PR_URL"
 name: Dependabot auto-merge
 on:
   pull_request_target:
     types:
       - opened
       - reopened
-      - synchronize
-  workflow_dispatch:
