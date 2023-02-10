@@ -1,3 +1,6 @@
+concurrency:
+  cancel-in-progress: false
+  group: dependabot
 jobs:
   approve:
     if: github.actor == 'dependabot[bot]'
@@ -25,12 +28,14 @@ jobs:
     steps:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          head: ${{ github.event.pull_request.head.ref }}
+          url: ${{ github.event.pull_request.html_url }}
         name: Merge Dependabot PRs
         run: |
-          subject=":twisted_rightwards_arrows: Merge pull request #${PR_URL##*/} from $PR_HEAD_REF"
-          gh pr merge --auto --merge --subject "$subject" "$PR_URL"
+          id=${url##*/}
+          subject=":twisted_rightwards_arrows: Merge pull request #$id from '$head'"
+          gh pr merge --auto --merge --subject "$subject" $url
+        shell: bash
 name: Dependabot auto-merge
 on:
   pull_request_target:
