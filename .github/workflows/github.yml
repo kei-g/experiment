@@ -1,0 +1,15 @@
+jobs:
+  github:
+    name: GitHub
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          github: ${{ toJSON(github) }}
+        name: GitHub
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.info(process.env.github)
+name: GitHub
+on:
+  workflow_dispatch:
