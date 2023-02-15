@@ -1,5 +1,6 @@
 jobs:
   run:
+    continue-on-error: true
     name: Run
     outputs:
       bar: ${{ steps.step.outputs.bar }}
@@ -10,16 +11,21 @@ jobs:
       - id: step
         name: ${{ matrix.name }}
         run: |
-          echo ${{ matrix.name }}=${{ matrix.value }} | tee -a $GITHUB_OUTPUT
+          value=$(head -c1 /dev/urandom | hexdump -e '1/1 "%u"')
+          value=$((value + 0))
+          echo ${{ matrix.name }}=$value | tee -a $GITHUB_OUTPUT
+          declare -a boolean=(success failure)
+          i=0
+          test $value -lt 128 || i=1
+          echo ${{ matrix.name }}-result=${boolean[$i]} | tee -a $GITHUB_OUTPUT
+        shell: bash
     strategy:
+      fail-fast: false
       matrix:
-        include:
-          - name: foo
-            value: bar
-          - name: bar
-            value: baz
-          - name: baz
-            value: foo
+        name:
+          - foo
+          - bar
+          - baz
   show:
     name: Show
     needs:
