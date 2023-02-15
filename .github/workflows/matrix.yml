@@ -28,9 +28,7 @@ jobs:
     steps:
       - name: Show
         run: |
-          echo foo=${{ needs.run.outputs.foo }}
-          echo bar=${{ needs.run.outputs.bar }}
-          echo baz=${{ needs.run.outputs.baz }}
+          echo '${{ toJSON(needs.run.outputs) }}' | jq .
 name: Matrix
 on:
   workflow_dispatch:
