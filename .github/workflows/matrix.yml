@@ -1,0 +1,36 @@
+jobs:
+  run:
+    name: Run
+    outputs:
+      bar: ${{ steps.step.outputs.bar }}
+      baz: ${{ steps.step.outputs.baz }}
+      foo: ${{ steps.step.outputs.foo }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: step
+        name: ${{ matrix.name }}
+        run: |
+          echo ${{ matrix.name }}=${{ matrix.value }} | tee -a $GITHUB_OUTPUT
+    strategy:
+      matrix:
+        include:
+          - name: foo
+            value: bar
+          - name: bar
+            value: baz
+          - name: baz
+            value: foo
+  show:
+    name: Show
+    needs:
+      - run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show
+        run: |
+          echo foo=${{ needs.run.outputs.foo }}
+          echo bar=${{ needs.run.outputs.bar }}
+          echo baz=${{ needs.run.outputs.baz }}
+name: Matrix
+on:
+  workflow_dispatch:
