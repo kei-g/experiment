@@ -1,4 +1,12 @@
 jobs:
+  build:
+    if: github.ref_type == 'branch'
+    name: Call 'Build'
+    uses: ./.github/workflows/build.yml
+  coverage:
+    if: github.ref_type == 'branch'
+    name: Call 'Coverage'
+    uses: ./.github/workflows/coverage.yml
   github:
     if: github.ref_type == 'tag'
     name: Create a release on GitHub
