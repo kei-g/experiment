@@ -5,12 +5,29 @@
 - :green_heart: CI chore
   - Dependabot has become to be applied also to GitHub Actions
   - Looser version has become to be specified for `kei-g/experiment`
-- :arrow_up: GitHub Action is bumped
-  - `github/codeql-action` is bumped from v1 to v2
+  - Many changes of CI have been applied
+- :sparkles: New features
+  - Variable parameters are added on doNothing{,Async}
 - :arrow_up: Packages are bumped
-  - `typescript` is bumped from 4.6.3 to 4.6.4
-- :wrench:
+  - `@actions/core` is bumped from 1.7.0 to 1.10.0
+  - `@kei-g/none` is added
+  - `@types/chai` is bumped from 4.3.1 to 4.3.5
+  - `@types/mocha` is bumped from 9.1.1 to 10.0.1
+  - `@types/node` is bumped from 17.0.30 to 20.5.7
+  - `@typescript-eslint/eslint-plugin` is bumped from 5.21.0 to 6.5.0
+  - `@typescript-eslint/parser` is bumped from 5.21.0 to 6.5.0
+  - `chai` is bumped from 4.3.6 to 4.3.8
+  - `esbuild` is bumped from 0.14.38 to 0.19.2
+  - `eslint` is bumped from 8.14.0 to 8.48.0
+  - `mocha` is bumped from 9.2.2 to 10.2.0
+  - `rimraf` is bumped from 3.0.2 to 5.0.1
+  - `ts-node` is bumped from 10.7.0 to 10.9.1
+  - `typescript` is bumped from 4.6.3 to 5.2.2
+- :wrench: Settings are changed
+  - '.vscode/settings.json' is configured for typescript
   - 'dist/index.ts' has become to be transpiled with --target=ES2015
+  - Ignore patterns are separated from '.eslintrc.json' to '.eslintignore'
+  - Setting file for markdownlint is separated from '.vscode/settings.json' to '.markdownlint.json'
 
 ## Version 1.0.2
 
