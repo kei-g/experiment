@@ -12,4 +12,6 @@ jobs:
             core.info(process.env.github)
 name: GitHub
 on:
+  pull_request:
+  pull_request_target:
   workflow_dispatch:
