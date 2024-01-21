@@ -1,4 +1,24 @@
 jobs:
+  json:
+    name: JSON
+    needs:
+      - run
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          value: ${{ toJSON(needs.run.outputs) }}
+        name: Value of ${{ matrix.name }}
+        run: |
+          echo ::group::${{ matrix.name }}
+          jq -Mcr '.${{ matrix.name }}' <<< $value
+          echo ::endgroup::
+        shell: bash
+    strategy:
+      matrix:
+        name:
+          - bar
+          - baz
+          - foo
   run:
     continue-on-error: true
     name: Run
