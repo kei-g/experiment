@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Show
         run: |
-          echo '${{ toJSON(needs.run.outputs) }}' | jq .
+          echo '${{ toJSON(needs.run.outputs) }}' | jq . >&2
 name: Matrix
 on:
   workflow_dispatch:
