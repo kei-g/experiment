@@ -9,7 +9,7 @@
   "description": "Personal experimental repository",
   "devDependencies": {
     "@kei-g/none": "^1.0.8",
-    "@types/chai": "^4.3.17",
+    "@types/chai": "^4.3.18",
     "@types/mocha": "^10.0.6",
     "@types/node": "^22.1.0",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
