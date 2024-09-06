@@ -1,10 +1,11 @@
 {
+  "allowCompoundWords": true,
+  "caseSensitive": false,
   "version": "0.2",
   "words": [
     "codeql",
     "commitish",
     "devel",
-    "endgroup",
     "esbuild",
     "ghaction",
     "gnupghome",
@@ -13,19 +14,15 @@
     "hexdump",
     "keygrip",
     "keyinfo",
-    "linebreak",
     "mktemp",
     "noreply",
     "openpgp",
-    "outfile",
     "pinentry",
-    "postpublish",
     "reloadagent",
     "signingkey",
     "signoff",
     "tada",
     "tmpdir",
-    "typeof",
     "updatestartuptty",
     "urandom"
   ]
