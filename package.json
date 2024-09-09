@@ -12,7 +12,7 @@
     "@types/chai": "^4.3.19",
     "@types/eslint": "^9.6.1",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^22.1.0",
+    "@types/node": "^22.5.4",
     "chai": "^5.1.1",
     "esbuild": "^0.23.1",
     "esbuild-register": "^3.6.0",
