@@ -1,5 +1,10 @@
 # Change Logs
 
+## Version 1.0.8
+
+- :sparkles: Feature is added
+  - Variable parameters are added on doNothing{,Async}
+
 ## Version 1.0.7
 
 - :sparkles: Feature is added
