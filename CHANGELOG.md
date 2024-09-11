@@ -1,5 +1,40 @@
 # ChangeLogs
 
+## Version 1.0.4
+
+- :green_heart: CI chore
+  - Some experimental workflow triggers are added
+  - `actions/checkout` is bumped from v3 to v4
+  - `actions/github-script` is bumped from v6 to v7
+  - `actions/setup-node` is bumped from v3 to v4
+  - `actions/upload-artifacts` is bumped from v3 to v4
+- :building_construction: Migrations
+  - Framework of coverage is migrated from `nyc` to `c8`
+  - `ts-node` is migrated to `esbuild-register` with `node`
+- :heavy_plus_sign: New dependent packages
+  - `@types/eslint` is added
+  - `esbuild-register` is added
+  - `c8` is added
+  - `typescript-eslint` is added
+- :arrow_up: Packages are bumped
+  - `@actions/core` is bumped from 1.10.0 to 1.10.1
+  - `@types/chai` is bumped from 4.3.5 to 4.3.19
+  - `@types/mocha` is bumped from 10.0.1 to 10.0.6
+  - `@types/node` is bumped from 20.5.7 to 22.5.4
+  - `chai` is bumped from 4.3.8 to 5.1.1
+  - `esbuild` is bumped from 0.19.2 to 0.23.1
+  - `eslint` is bumped from 8.48.0 to 9.10.0
+  - `mocha` is bumped from 10.2.0 to 10.4.
+  - `rimraf` is bumped from 5.0.1 to 6.0.1
+  - `typescript` is bumped from 5.2.2 to 5.6.2
+- :heavy_minus_sign: Removed packages
+  - `@typescript-eslint/eslint-plugin` is removed
+  - `@typescript-eslint/parser` is removed
+  - `nyc` is removed
+  - `ts-node` is removed
+- :wrench: Settings are changed
+  - Compound words are allowed for spell checker
+
 ## Version 1.0.3
 
 - :green_heart: CI chore
