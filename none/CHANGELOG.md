@@ -1,5 +1,10 @@
 # Change Logs
 
+## Version 1.0.9
+
+- :wrench: Setting file is updated
+  - Correct "main" property from 'none.js' to 'index.js'
+
 ## Version 1.0.8
 
 - :sparkles: Feature is added
