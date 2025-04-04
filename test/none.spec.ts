@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { doNothing, doNothingAsync } from '../src/none'
-import { expect } from 'chai'
+import { equal } from 'node:assert'
 
 describe(
   '@kei-g/none',
@@ -9,14 +9,14 @@ describe(
       'doNothing',
       () => {
         const result = doNothing()
-        expect(result).equals(undefined)
+        equal(result, undefined)
       }
     )
     it(
       'doNothingAsync',
       async () => {
         const result = await doNothingAsync()
-        expect(result).equals(undefined)
+        equal(result, undefined)
       }
     )
   }
