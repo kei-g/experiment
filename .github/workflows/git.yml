@@ -1,5 +1,15 @@
 jobs:
-  timestamp:
+  dump:
+    name: Dump the information
+    needs:
+      - git
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show
+        run: |
+          echo hash=${{ needs.git.outputs.hash }} >&2
+          echo timestamp=${{ needs.git.outputs.timestamp }} >&2
+  git:
     name: Acquire git information
     outputs:
       hash: ${{ steps.git.outputs.hash }}
@@ -33,6 +43,6 @@ jobs:
           ) \
           | tee -a $GITHUB_OUTPUT \
           >&2
-name: git
+name: Git
 on:
   workflow_dispatch:
