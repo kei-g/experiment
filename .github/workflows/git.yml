@@ -1,7 +1,8 @@
 jobs:
   timestamp:
-    name: Get timestamp
+    name: Acquire git information
     outputs:
+      hash: ${{ steps.git.outputs.hash }}
       timestamp: ${{ steps.git.outputs.timestamp }}
     runs-on: ubuntu-latest
     steps:
@@ -17,6 +18,13 @@ jobs:
         name: Run git command on the cloned repository
         run: |
           cd /tmp/source
+          echo hash=$( \
+            TZ=UTC0 git log \
+              --pretty=format:'%H' \
+              -1 \
+          ) \
+          | tee -a $GITHUB_OUTPUT \
+          >&2
           echo timestamp=$( \
             TZ=UTC0 git log \
               --date=format-local:'%Y%m%d%H%M%S' \
