@@ -1,0 +1,30 @@
+jobs:
+  timestamp:
+    name: Get timestamp
+    outputs:
+      timestamp: ${{ steps.git.outputs.timestamp }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the repository
+        run: |
+          git clone \
+              --depth=1 \
+              --recursive \
+              -o github \
+            https://github.com/kei-g/experiment.git \
+            /tmp/source
+      - id: git
+        name: Run git command on the cloned repository
+        run: |
+          cd /tmp/source
+          echo timestamp=$( \
+            TZ=UTC0 git log \
+              --date=format-local:'%Y%m%d%H%M%S' \
+              --pretty=format:'%cd' \
+              -1 \
+          ) \
+          | tee -a $GITHUB_OUTPUT \
+          >&2
+name: git
+on:
+  workflow_dispatch:
