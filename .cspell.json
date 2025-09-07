@@ -5,6 +5,7 @@
   "words": [
     "codeql",
     "commitish",
+    "criu",
     "devel",
     "esbuild",
     "ghaction",
@@ -16,6 +17,7 @@
     "keyinfo",
     "mktemp",
     "noreply",
+    "nowarnings",
     "openpgp",
     "pinentry",
     "reloadagent",

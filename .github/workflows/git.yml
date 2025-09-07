@@ -16,15 +16,76 @@ jobs:
       timestamp: ${{ steps.git.outputs.timestamp }}
     runs-on: ubuntu-latest
     steps:
-      - name: Clone the repository
+      - name: Checkout the repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+      - env:
+          DEBCONF_NOWARNINGS: yes
+          DEBIAN_FRONTEND: noninteractive
+        name: Install criu
+        run: |
+          sudo apt install ./.github/assets/criu_4.1.1_amd64.deb
+      - id: current
+        name: Get current timestamp
+        run: |
+          echo timestamp=$(date --utc '+%Y%m%d%H%M%S') \
+            | tee -a $GITHUB_OUTPUT \
+            >&2
+      - id: work
+        name: Restore from cache
+        uses: actions/cache/restore@v4
+        with:
+          key: work-${{ steps.current.outputs.timestamp }}
+          path:
+            /tmp/work
+          restore-keys:
+            work-
+      - id: clone-a
+        if: ${{ steps.work.outputs.cache-hit == true }}
+        name: Continue cloning
+        run: |
+          sudo criu -D /tmp/work -j &
+          pid=$!
+          sleep 15
+          status=$(jobs -l | grep $pid | sed -r 's/\s+/ /g' | cut -d' ' -f3)
+          echo status=$status | tee -a $GITHUB_OUTPUT >&2
+          [ $status = Running ] \
+            && {
+              sudo rm -fr /tmp/work
+              mkdir /tmp/work
+              sudo criu dump -D /tmp/work -j -t $pid
+            } \
+            || :
+      - id: clone-b
+        if: ${{ steps.work.outputs.cache-hit == false }}
+        name: Clone the repository
         run: |
           git clone \
               --depth=1 \
               --recursive \
               -o github \
             https://github.com/llvm/llvm-project.git \
-            /tmp/source
+            /tmp/source &
+          pid=$!
+          sleep 15
+          status=$(jobs -l | grep $pid | sed -r 's/\s+/ /g' | cut -d' ' -f3)
+          echo status=$status | tee -a $GITHUB_OUTPUT >&2
+          [ $status = Running ] \
+            && {
+              [ -d /tmp/work ] || mkdir /tmp/work
+              sudo criu dump -D /tmp/work -j -t $pid
+            } \
+            || :
+      - if: ${{ steps.clone-a.outputs.status == 'Running' || steps.clone-b.outputs.status == 'Running' }}
+        name: Save to cache
+        uses: actions/cache/save@v4
+        with:
+          key: work-${{ steps.current.outputs.timestamp }}
+          path:
+            /tmp/work
       - id: git
+        if: ${{ steps.clone-a.outputs.status == 'done' || steps.clone-b.outputs.status == 'done' }}
         name: Run git command on the cloned repository
         run: |
           cd /tmp/source
