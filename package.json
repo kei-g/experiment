@@ -4,7 +4,7 @@
     "url": "https://github.com/kei-g/experiment/issues"
   },
   "dependencies": {
-    "@actions/core": "^2.0.0"
+    "@actions/core": "^2.0.1"
   },
   "description": "Personal experimental repository",
   "devDependencies": {
