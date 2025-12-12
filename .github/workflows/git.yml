@@ -34,7 +34,7 @@ jobs:
             >&2
       - id: work
         name: Restore from cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           key: work-${{ steps.current.outputs.timestamp }}
           path:
@@ -79,7 +79,7 @@ jobs:
             || :
       - if: ${{ steps.clone-a.outputs.status == 'Running' || steps.clone-b.outputs.status == 'Running' }}
         name: Save to cache
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           key: work-${{ steps.current.outputs.timestamp }}
           path:
