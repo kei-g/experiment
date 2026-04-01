@@ -2,10 +2,11 @@
   "compilerOptions": {
     "alwaysStrict": true,
     "declaration": true,
-    "declarationDir": ".",
+    "declarationDir": "./types",
     "downlevelIteration": true,
     "emitBOM": false,
     "emitDeclarationOnly": true,
+    "ignoreDeprecations": "6.0",
     "lib": [
       "ES2015",
     ],
@@ -15,11 +16,12 @@
     "outDir": ".",
     "pretty": true,
     "removeComments": true,
+    "rootDir": ".",
     "strict": true,
     "strictNullChecks": false,
     "target": "ES6",
-    "typeRoots": [
-      "node_modules/@types"
+    "types": [
+      "node",
     ]
   },
   "exclude": [

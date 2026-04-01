@@ -39,6 +39,7 @@
     "clean": "rimraf coverage/ dist/*.d.ts *.d.ts index.js",
     "cover": "c8 --check-coverage _mocha",
     "lint": "eslint src/**/*.ts",
+    "postbuild:tsc": "tar -C types/src -cf - . | tar -xf - && rm -fr types",
     "postpublish": "run-s clean",
     "prebuild": "run-p clean lint",
     "prepublishOnly": "run-s build",
