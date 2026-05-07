@@ -1,0 +1,107 @@
+jobs:
+  a:
+    name: A
+    outputs:
+      path: ${{ steps.file.outputs.path }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: file
+        name: Main job
+        run: |
+          echo path= \
+            | tee -a $GITHUB_OUTPUT
+  b1:
+    if: ${{ needs.a.outputs.path != null }}
+    name: B1
+    needs:
+      - a
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show path
+        run: |
+          echo ::group::path
+          echo ${{ needs.a.outputs.path }}
+          echo ::endgroup::
+  b2:
+    if: ${{ needs.a.outputs.path == null }}
+    name: B2
+    needs:
+      - a
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show path
+        run: |
+          echo ::group::path
+          echo ${{ needs.a.outputs.path }}
+  c:
+    name: C
+    outputs:
+      path: ${{ steps.file.outputs.path }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: file
+        name: Main job
+        run: |
+          echo path=$(which bash) \
+            | tee -a $GITHUB_OUTPUT
+  d1:
+    if: ${{ needs.c.outputs.path != null }}
+    name: D1
+    needs:
+      - c
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show path
+        run: |
+          echo ::group::path
+          echo ${{ needs.c.outputs.path }}
+          echo ::endgroup::
+  d2:
+    if: ${{ needs.c.outputs.path == null }}
+    name: D2
+    needs:
+      - c
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show path
+        run: |
+          echo ::group::path
+          echo ${{ needs.c.outputs.path }}
+          echo ::endgroup::
+  e:
+    name: E
+    outputs:
+      path: ${{ steps.file.outputs.path }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: file
+        name: Main job
+        run: |
+          :
+  f1:
+    if: ${{ needs.e.outputs.path != null }}
+    name: F1
+    needs:
+      - e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show path
+        run: |
+          echo ::group::path
+          echo ${{ needs.e.outputs.path }}
+          echo ::endgroup::
+  f2:
+    if: ${{ needs.e.outputs.path == null }}
+    name: F2
+    needs:
+      - e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show path
+        run: |
+          echo ::group::path
+          echo ${{ needs.e.outputs.path }}
+          echo ::endgroup::
+name: Null work
+on:
+  workflow_dispatch:
