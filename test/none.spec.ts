@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { doNothing, doNothingAsync } from '../src/none'
+import { describe, it } from 'node:test'
+import { doNothing, doNothingAsync } from '../src/none.ts'
 import { equal } from 'node:assert'
 
 describe(

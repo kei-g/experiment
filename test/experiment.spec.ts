@@ -1,6 +1,6 @@
-import { describe, it } from 'mocha'
+import { describe, it } from 'node:test'
 import assert, { equal } from 'node:assert'
-import { experiment } from '../src'
+import { experiment } from '../src/index.ts'
 
 describe('experiment', () => {
   it('with argument', () => {
