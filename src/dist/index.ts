@@ -1,4 +1,4 @@
-import { experiment } from '..'
+import { experiment } from '../index.ts'
 import { getInput } from '@actions/core'
 
 (() => {
